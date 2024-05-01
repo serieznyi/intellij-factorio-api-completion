@@ -17,7 +17,10 @@ intellij {
     version.set("2023.2.5")
     type.set("IC") // Target IDE Platform
 
-    plugins.set(listOf(/* Plugin Dependencies */))
+    plugins.set(listOf(
+        // See https://plugins.jetbrains.com/plugin/9768-emmylua/versions
+        "com.tang:1.4.13-IDEA241"
+    ))
 }
 
 tasks {
