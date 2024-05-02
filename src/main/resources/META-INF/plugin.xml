@@ -26,6 +26,8 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-
+        <projectConfigurable groupId="language" displayName="Factorio API Completion"
+                             id="preference.FactorioCompletionConfig"
+                             instance="io.serieznyi.intellij.factorioapicompletition.intellij.ui.PluginConfigurable"/>
     </extensions>
 </idea-plugin>
