@@ -23,6 +23,13 @@ intellij {
     ))
 }
 
+configure<SourceSetContainer> {
+    named("main") {
+        java.srcDir("src/main/kotlin")
+        java.destinationDirectory.set(file("build/classes/kotlin/main/"))
+    }
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(JavaVersion.VERSION_17.toString())
