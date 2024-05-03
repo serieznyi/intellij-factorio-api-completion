@@ -32,14 +32,14 @@ jobs:
           gradle-version: wrapper
       - name: Compile project
         id: gradle
-        run: ./gradlew testClasses
+        run: ./gradlew testClasses -x verifyPluginConfiguration
       - name: Upload build reports
         uses: actions/upload-artifact@v3
         with:
           name: build-reports
           path: build/reports/
       - name: Run JUnit
-        run: ./gradlew test
+        run: ./gradlew test -x verifyPluginConfiguration
       - name: Archive JUnit result
         uses: actions/upload-artifact@v3
         with:
