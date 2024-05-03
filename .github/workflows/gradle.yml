@@ -34,19 +34,19 @@ jobs:
         id: gradle
         run: ./gradlew testClasses
       - name: Upload build reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-reports
           path: build/reports/
       - name: Run JUnit
         run: ./gradlew test
       - name: Archive JUnit result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: junit-report
           path: build/reports/junit
       - name: Archive Jacoco Coverage result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jacoco-coverage-report
           path: build/reports/jacoco
