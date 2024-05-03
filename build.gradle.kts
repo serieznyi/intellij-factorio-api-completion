@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.serieznyi.intellij"
-version = "1.0-SNAPSHOT"
+version = "1.0.0-IDEA231-eap-1"
 
 repositories {
     mavenCentral()
@@ -20,12 +20,12 @@ dependencies {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2023.2.5")
+    version.set("2023.1")
     type.set("IC") // Target IDE Platform
 
     plugins.set(listOf(
         // See https://plugins.jetbrains.com/plugin/9768-emmylua/versions
-        "com.tang:1.4.13-IDEA241"
+        "com.tang:1.4.7-IDEA231"
     ))
 }
 
@@ -53,8 +53,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("222")
-        untilBuild.set("242.*")
+        sinceBuild.set("231")
     }
 
     signPlugin {
