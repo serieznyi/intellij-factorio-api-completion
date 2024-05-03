@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.9.23"
     id("org.jetbrains.intellij") version "1.17.3"
     id("jacoco")
+    id("org.jetbrains.changelog") version "2.2.0"
     id("org.sonarqube") version "5.0.0.4638"
 }
 
@@ -23,16 +24,22 @@ dependencies {
 
 fun sonarqube() {}
 
+changelog {
+    path.set(file("CHANGELOG.md").canonicalPath)
+}
+
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     version.set("2023.1")
     type.set("IC") // Target IDE Platform
 
-    plugins.set(listOf(
-        // See https://plugins.jetbrains.com/plugin/9768-emmylua/versions
-        "com.tang:1.4.7-IDEA231"
-    ))
+    plugins.set(
+        listOf(
+            // See https://plugins.jetbrains.com/plugin/9768-emmylua/versions
+            "com.tang:1.4.7-IDEA231"
+        )
+    )
 }
 
 configure<SourceSetContainer> {
@@ -72,6 +79,27 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("231")
+
+        changeNotes.set(provider(fun(): String {
+            val output = StringBuilder()
+            val releasedVersions = changelog.getAll().values.filter { version -> !version.isUnreleased }
+
+            for (item in releasedVersions) {
+                output.append("\n<h2>${item.version}</h2>\n\n")
+
+                for (section in item.sections) {
+                    output.append("<h3>${section.key}</h3>\n")
+
+                    output.append("<ul>\n")
+                    for (change in section.value) {
+                        output.append("\t<li>${change}</li>\n")
+                    }
+                    output.append("</ul>\n")
+                }
+            }
+
+            return "\n".plus(output.append("\n").toString()).plus("\n")
+        }))
     }
 
     signPlugin {
