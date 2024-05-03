@@ -75,9 +75,14 @@ tasks {
     }
 
     signPlugin {
-        certificateChainFile.set(file(System.getenv("INTELLIJ_PLUGIN_CERTIFICATE_CHAIN_FILE_PATH")))
-        privateKeyFile.set(file(System.getenv("INTELLIJ_PLUGIN_PRIVATE_KEY_FILE_PATH")))
-        password.set(System.getenv("INTELLIJ_PLUGIN_PRIVATE_KEY_PASSWORD"))
+        val chainFilePath = System.getenv("INTELLIJ_PLUGIN_CERTIFICATE_CHAIN_FILE_PATH")
+        val privateKeyFilePath = System.getenv("INTELLIJ_PLUGIN_PRIVATE_KEY_FILE_PATH")
+
+        if (chainFilePath != null && privateKeyFilePath !== null) {
+            certificateChainFile.set(file(chainFilePath))
+            privateKeyFile.set(file(privateKeyFilePath))
+            password.set(System.getenv("INTELLIJ_PLUGIN_PRIVATE_KEY_PASSWORD"))
+        }
     }
 
     publishPlugin {
