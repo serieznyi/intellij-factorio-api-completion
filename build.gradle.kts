@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.23"
-    id("org.jetbrains.intellij") version "1.17.2"
+    id("org.jetbrains.intellij") version "1.17.3"
     id("jacoco")
     id("org.sonarqube") version "5.0.0.4638"
 }
@@ -75,13 +75,19 @@ tasks {
     }
 
     signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
-        password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
+        val chainFilePath = System.getenv("INTELLIJ_PLUGIN_CERTIFICATE_CHAIN_FILE_PATH")
+        val privateKeyFilePath = System.getenv("INTELLIJ_PLUGIN_PRIVATE_KEY_FILE_PATH")
+
+        if (chainFilePath != null && privateKeyFilePath !== null) {
+            certificateChainFile.set(file(chainFilePath))
+            privateKeyFile.set(file(privateKeyFilePath))
+            password.set(System.getenv("INTELLIJ_PLUGIN_PRIVATE_KEY_PASSWORD"))
+        }
     }
 
     publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN"))
+        token.set(System.getenv("INTELLIJ_PLUGIN_PUBLISH_TOKEN"))
+        channels.set(listOf("EAP"))
     }
 
     test {
