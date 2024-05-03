@@ -1,7 +1,10 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.23"
     id("org.jetbrains.intellij") version "1.17.2"
+    id("jacoco")
 }
 
 group = "io.serieznyi.intellij"
@@ -13,7 +16,7 @@ repositories {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -42,8 +45,20 @@ java {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.12"
+}
+
 tasks {
-        // Set the JVM compatibility versions
+    withType<Test> {
+        configure<JacocoTaskExtension> {
+            // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin-faq.html#jacoco-reports-0-coverage
+            isIncludeNoLocationClasses = true
+            excludes = listOf("jdk.internal.*")
+        }
+    }
+
+    // Set the JVM compatibility versions
     withType<JavaCompile> {
         sourceCompatibility = JavaVersion.VERSION_17.toString()
         targetCompatibility = JavaVersion.VERSION_17.toString()
@@ -69,7 +84,36 @@ tasks {
     test {
         useJUnitPlatform()
 
+        testLogging {
+            exceptionFormat = TestExceptionFormat.FULL
+            showStandardStreams = true
+        }
+
+        finalizedBy(jacocoTestReport)
+
+        reports {
+            junitXml.outputLocation.set(layout.buildDirectory.dir("reports/junit/xml"))
+            html.outputLocation.set(layout.buildDirectory.dir("reports/junit/html"))
+        }
+
         systemProperty("junit.jupiter.execution.parallel.enabled", true)
         systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
+    }
+
+    jacocoTestReport {
+        dependsOn(test)
+
+        classDirectories.setFrom(instrumentCode)
+
+        reports {
+            xml.required = true
+            xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/report.xml"))
+            html.required = true
+            html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/html"))
+        }
+    }
+
+    jacocoTestCoverageVerification {
+        classDirectories.setFrom(instrumentCode)
     }
 }
