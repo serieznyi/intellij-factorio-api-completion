@@ -30,4 +30,8 @@
                              id="preference.FactorioCompletionConfig"
                              instance="io.serieznyi.intellij.factorioapicompletition.intellij.ui.PluginConfigurable"/>
     </extensions>
+
+    <extensions defaultExtensionNs="JavaScript.JsonSchema">
+        <ProviderFactory implementation="io.serieznyi.intellij.factorioapicompletition.intellij.FactorioModInfoSchemaProviderFactory"/>
+    </extensions>
 </idea-plugin>

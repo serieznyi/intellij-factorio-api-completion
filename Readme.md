@@ -8,3 +8,8 @@
 [![Jetbrains plugin](https://img.shields.io/jetbrains/plugin/v/24333-factorio-api-completion.svg?style=flat-square)](https://plugins.jetbrains.com/plugin/24333-factorio-api-completion)
 
 This is a plugin add code completion for the Factorio Api.
+
+Plugin develops ideas from [knoxfighter/intellij-factorio-autocompletion](https://github.com/knoxfighter/intellij-factorio-autocompletion). 
+
+# Features
+- Validation and completion [info.json](https://wiki.factorio.com/Tutorial:Mod_structure#info.json) file
