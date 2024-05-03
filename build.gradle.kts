@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.23"
-    id("org.jetbrains.intellij") version "1.17.2"
+    id("org.jetbrains.intellij") version "1.17.3"
     id("jacoco")
     id("org.sonarqube") version "5.0.0.4638"
 }
