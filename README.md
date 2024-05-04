@@ -13,3 +13,7 @@ Plugin develops ideas from [knoxfighter/intellij-factorio-autocompletion](https:
 
 # Features
 - Validation and completion [info.json](https://wiki.factorio.com/Tutorial:Mod_structure#info.json) file
+
+# References
+- [CHANGELOG](CHANGELOG.md)
+- [Jetbrains Market - Factorio Api Completion](https://plugins.jetbrains.com/plugin/24333-factorio-api-completion)
