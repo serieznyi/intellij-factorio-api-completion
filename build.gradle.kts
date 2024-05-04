@@ -1,4 +1,10 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.ChangelogSectionUrlBuilder
+import java.text.SimpleDateFormat
+import java.util.*
+
+project.ext["repositoryUrl"] = "https://github.com/serieznyi/intellij-factorio-api-completion"
 
 plugins {
     id("java")
@@ -26,6 +32,7 @@ fun sonarqube() {}
 
 changelog {
     path.set(file("CHANGELOG.md").canonicalPath)
+    header = "[${version.get()}] - ${SimpleDateFormat("yyyy-MM-dd").format(Date())}"
 }
 
 // Configure Gradle IntelliJ Plugin
@@ -80,26 +87,13 @@ tasks {
     patchPluginXml {
         sinceBuild.set("231")
 
-        changeNotes.set(provider(fun(): String {
-            val output = StringBuilder()
-            val releasedVersions = changelog.getAll().values.filter { version -> !version.isUnreleased }
-
-            for (item in releasedVersions) {
-                output.append("\n<h2>${item.version}</h2>\n\n")
-
-                for (section in item.sections) {
-                    output.append("<h3>${section.key}</h3>\n")
-
-                    output.append("<ul>\n")
-                    for (change in section.value) {
-                        output.append("\t<li>${change}</li>\n")
-                    }
-                    output.append("</ul>\n")
-                }
-            }
-
-            return "\n".plus(output.append("\n").toString()).plus("\n")
-        }))
+        changeNotes.set(
+            changelog.getAll().values
+                .filter { version -> !version.isUnreleased }
+                .subList(0, 9.coerceAtMost(changelog.getAll().size - 1)) // newest 10 versions
+                .joinToString("") { changelog.renderItem(it, Changelog.OutputType.HTML) }
+                .plus("\nLearn more in the <a href='${project.ext["repositoryUrl"]}/blob/master/CHANGELOG.md'>full changelog</a>")
+        )
     }
 
     signPlugin {
