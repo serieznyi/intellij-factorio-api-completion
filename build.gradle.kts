@@ -1,6 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.changelog.Changelog
-import org.jetbrains.changelog.ChangelogSectionUrlBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 

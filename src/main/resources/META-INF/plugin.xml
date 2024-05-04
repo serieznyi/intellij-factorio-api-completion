@@ -14,7 +14,14 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <p>Adds support to code completion the Factorio LUA API.</p>
+        <p>Add code completion for the Factorio modding Api.</p>
+        <p style="display: inline">
+            <a href="https://github.com/serieznyi/intellij-factorio-api-completion">Source</a>
+        </p>
+        <h2>Features</h2>
+        <ul>
+            <li>Validation and completion <a href="https://wiki.factorio.com/Tutorial:Mod_structure#info.json">info.json</a> file</li>
+        </ul>
         ]]>
     </description>
 
