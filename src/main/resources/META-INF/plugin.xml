@@ -14,7 +14,7 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <p>Add code completion for the Factorio modding Api.</p>
+        <p>This is an Intellij plugin add code completion for the modding API of <a href="https://factorio.com/">Factorio</a> game</p>
         <p style="display: inline">
             <a href="https://github.com/serieznyi/intellij-factorio-api-completion">Source</a>
         </p>

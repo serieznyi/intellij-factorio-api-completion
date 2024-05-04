@@ -9,7 +9,7 @@
 
 # Description
 
-This is a Intellij plugin add code completion for the Factorio modding Api.
+This is an Intellij plugin add code completion for the modding API of [Factorio](https://factorio.com/) game.
 
 # Features
 - Validation and completion [info.json](https://wiki.factorio.com/Tutorial:Mod_structure#info.json) file
