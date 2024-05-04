@@ -7,9 +7,13 @@
 [![Build status](https://github.com/serieznyi/intellij-factorio-api-completion/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/serieznyi/intellij-factorio-api-completion/actions/workflows/gradle.yml?query=branch%3Amaster)
 [![Jetbrains plugin](https://img.shields.io/jetbrains/plugin/v/24333-factorio-api-completion.svg?style=flat-square)](https://plugins.jetbrains.com/plugin/24333-factorio-api-completion)
 
-This is a plugin add code completion for the Factorio Api.
+# Description
 
-Plugin develops ideas from [knoxfighter/intellij-factorio-autocompletion](https://github.com/knoxfighter/intellij-factorio-autocompletion). 
+This is an Intellij plugin add code completion for the modding API of [Factorio](https://factorio.com/) game.
 
 # Features
 - Validation and completion [info.json](https://wiki.factorio.com/Tutorial:Mod_structure#info.json) file
+
+# References
+- [CHANGELOG](CHANGELOG.md)
+- [Jetbrains Market - Factorio Api Completion](https://plugins.jetbrains.com/plugin/24333-factorio-api-completion)

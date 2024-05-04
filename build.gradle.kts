@@ -1,10 +1,16 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.changelog.Changelog
+import java.text.SimpleDateFormat
+import java.util.*
+
+project.ext["repositoryUrl"] = "https://github.com/serieznyi/intellij-factorio-api-completion"
 
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.23"
     id("org.jetbrains.intellij") version "1.17.3"
     id("jacoco")
+    id("org.jetbrains.changelog") version "2.2.0"
     id("org.sonarqube") version "5.0.0.4638"
 }
 
@@ -23,16 +29,23 @@ dependencies {
 
 fun sonarqube() {}
 
+changelog {
+    path.set(file("CHANGELOG.md").canonicalPath)
+    header = "[${version.get()}] - ${SimpleDateFormat("yyyy-MM-dd").format(Date())}"
+}
+
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     version.set("2023.1")
     type.set("IC") // Target IDE Platform
 
-    plugins.set(listOf(
-        // See https://plugins.jetbrains.com/plugin/9768-emmylua/versions
-        "com.tang:1.4.7-IDEA231"
-    ))
+    plugins.set(
+        listOf(
+            // See https://plugins.jetbrains.com/plugin/9768-emmylua/versions
+            "com.tang:1.4.7-IDEA231"
+        )
+    )
 }
 
 configure<SourceSetContainer> {
@@ -72,6 +85,14 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("231")
+
+        changeNotes.set(
+            changelog.getAll().values
+                .filter { version -> !version.isUnreleased }
+                .subList(0, 9.coerceAtMost(changelog.getAll().size - 1)) // newest 10 versions
+                .joinToString("") { changelog.renderItem(it, Changelog.OutputType.HTML) }
+                .plus("\nLearn more in the <a href='${project.ext["repositoryUrl"]}/blob/master/CHANGELOG.md'>full changelog</a>")
+        )
     }
 
     signPlugin {
