@@ -52,7 +52,9 @@ jobs:
       - { name: Setup Gradle, uses: gradle/gradle-build-action@v3, with: { gradle-home-cache-cleanup: true } }
       - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report } }
       - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report } }
-      - run: git fetch --all
+      # https://docs.github.com/en/actions/learn-github-actions/contexts
+      - run: git fetch ${{ github.event.repository.name }} ${{ github.event.repository.default_branch }}
+      - run: git fetch ${{ github.event.repository.name }} ${{ github.ref }}
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
