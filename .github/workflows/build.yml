@@ -53,6 +53,7 @@ jobs:
       - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report } }
       - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report } }
       # https://docs.github.com/en/actions/learn-github-actions/contexts
+      - run: git fetch -a
       - run: git fetch . origin/${{ github.event.repository.default_branch }}
       - run: git fetch . ${{ github.ref }}
       - name: Cache SonarCloud packages
