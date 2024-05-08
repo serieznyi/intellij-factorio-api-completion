@@ -59,6 +59,10 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CONTEXT"
       - name: Run SonarQube analysis with Quality Gates
         if: github.ref != 'refs/heads/master'
         run: ./gradlew sonar -Dsonar.branch.name=${{ github.ref_name }}
