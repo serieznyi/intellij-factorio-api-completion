@@ -52,6 +52,7 @@ jobs:
       - { name: Setup Gradle, uses: gradle/gradle-build-action@v3, with: { gradle-home-cache-cleanup: true } }
       - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report } }
       - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report } }
+      - run: git fetch
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
