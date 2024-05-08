@@ -61,7 +61,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
       - name: Run SonarQube analysis with Quality Gates
         if: github.ref != 'refs/heads/master'
-        run: ./gradlew sonar -Dsonar.branch.name=${{ env.BRANCH_NAME }}
+        run: ./gradlew sonar -Dsonar.branch.name=${{ github.ref_name }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Run SonarQube analysis
