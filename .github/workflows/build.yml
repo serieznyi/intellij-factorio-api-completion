@@ -1,4 +1,4 @@
-name: Project CI
+name: Build
 on:
   pull_request: # all PRs
   push:
@@ -27,7 +27,7 @@ jobs:
       - { name: Setup Gradle, uses: gradle/actions/setup-gradle@v3, with: { gradle-home-cache-cleanup: true } }
       - name: Build plugin
         run: ./gradlew buildPlugin
-      - { name: Upload `compiled` artifact, uses: actions/upload-artifact@v4, with: { name: compiled, path: build/classes/**/*, retention-days: ${{ env.ARTIFACT_TTL }} } }
+      - { name: Upload `compiled` artifact, uses: actions/upload-artifact@v4, with: { name: compiled, path: build/classes/**/*, retention-days: "${{ env.ARTIFACT_TTL }}" } }
 
   testing:
     name: Test with coverage
@@ -40,8 +40,8 @@ jobs:
       - { name: Download `compiled`, uses: actions/download-artifact@v4, with: { name: compiled, path: build/classes/ } }
       - name: Run tests
         run: ./gradlew check
-      - { name: Upload `junit-report` artifact, uses: actions/upload-artifact@v4, with: { name: junit-report, path: build/reports/junit, retention-days: ${{ env.ARTIFACT_TTL }} } }
-      - { name: Upload `jacoco-report` artifact, uses: actions/upload-artifact@v4, with: { name: jacoco-report, path: build/reports/jacoco, retention-days: ${{ env.ARTIFACT_TTL }} } }
+      - { name: Upload `junit-report` artifact, uses: actions/upload-artifact@v4, with: { name: junit-report, path: build/reports/junit, retention-days: "${{ env.ARTIFACT_TTL }}" } }
+      - { name: Upload `jacoco-report` artifact, uses: actions/upload-artifact@v4, with: { name: jacoco-report, path: build/reports/jacoco, retention-days: "${{ env.ARTIFACT_TTL }}" } }
 
   analyse:
     name: Analyse
@@ -85,7 +85,7 @@ jobs:
       - name: Run Plugin Verify
         if: github.ref != 'refs/heads/master'
         run: ./gradlew runPluginVerifier
-      - { name: Upload `intellij-verification-report` artifact, uses: actions/upload-artifact@v4, with: { name: intellij-verification-report, path: build/reports/pluginVerifier, retention-days: ${{ env.ARTIFACT_TTL }} } }
+      - { name: Upload `intellij-verification-report` artifact, uses: actions/upload-artifact@v4, with: { name: intellij-verification-report, path: build/reports/pluginVerifier, retention-days: "${{ env.ARTIFACT_TTL }}" } }
 
   deploy-artifacts:
     name: Deploy reports
@@ -96,15 +96,34 @@ jobs:
     permissions:
       pages: write
       id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      statuses: write
+    env:
+      GH_TOKEN: ${{ github.token }}
     runs-on: ubuntu-latest
     steps:
-      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: reports/junit } }
-      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: reports/jacoco } }
-      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: reports/pluginVerifier } }
-      - { name: Upload `github-pages` artifact, uses: actions/upload-artifact@v4, with: { name: github-pages, path: reports/, retention-days: ${{ env.ARTIFACT_TTL }} } }
+      - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
+      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/${{ github.head_ref }}/reports/junit" } }
+      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/${{ github.head_ref }}/reports/jacoco" } }
+      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/${{ github.head_ref }}/reports/pluginVerifier" } }
+#      - run: cp docs/artifacts-report-page/index.html var/reports/${{ github.head_ref }}/index.html
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        with:
+          FOLDER: "var/${{ github.head_ref }}/reports"
+      - run: find .
       - name: Deploy reports to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "var/${{ github.head_ref }}"
+      - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-
+      - run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
+            -f "state=success" \
+            -f "target_url=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/${{ github.head_ref }}/reports" \
+            -f "description=Reports on Github Pages" \
+            -f "context=${{ github.workflow }}"
