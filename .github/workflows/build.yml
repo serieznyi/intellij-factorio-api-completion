@@ -116,7 +116,7 @@ jobs:
       - name: Prepare artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "var/${{ github.head_ref }}"
+          path: var/
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
