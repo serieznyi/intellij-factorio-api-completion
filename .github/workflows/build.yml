@@ -90,6 +90,9 @@ jobs:
   deploy-artifacts:
     name: Deploy reports
     needs: [testing, verifyPlugin]
+    concurrency:
+      group: factorio-api-completion
+      cancel-in-progress: false
     permissions:
       pages: write
       id-token: write
