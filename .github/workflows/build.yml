@@ -109,7 +109,7 @@ jobs:
       - name: Generate Directory Listings
         uses: jayanta525/github-pages-directory-listing@v4.0.0
         with:
-          FOLDER: var/
+          FOLDER: "var/${{ github.head_ref }}/reports"
       - run: find .
       - name: Deploy reports to GitHub Pages
         uses: actions/upload-pages-artifact@v3
