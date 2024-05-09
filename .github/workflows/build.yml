@@ -111,7 +111,7 @@ jobs:
         with:
           FOLDER: "var/${{ github.head_ref }}/reports"
       - run: find .
-      - name: Deploy reports to GitHub Pages
+      - name: Prepare artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: "var/${{ github.head_ref }}"
