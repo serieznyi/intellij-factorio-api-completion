@@ -22,14 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJson(job) }}
-        run: echo "$JOB_CONTEXT"
       - { name: Gradle Wrapper Validation, uses: gradle/wrapper-validation-action@v3 }
       - { name: Set up JDK, uses: actions/setup-java@v4, with: { distribution: "${{ env.JAVA_DISTRIBUTION }}", java-version: "${{ env.JAVA_VERSION }}" } }
       - { name: Setup Gradle, uses: gradle/actions/setup-gradle@v3, with: { gradle-home-cache-cleanup: true } }
@@ -126,5 +118,5 @@ jobs:
             --method POST \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/statuses/${{ github.sha }} \
+            /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
             -f "state=success" -f "target_url=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/" -f "description=Reports"
