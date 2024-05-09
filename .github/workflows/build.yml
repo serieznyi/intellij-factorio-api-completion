@@ -97,10 +97,6 @@ jobs:
       pages: write
       id-token: write
       statuses: write
-    env:
-      GH_TOKEN: ${{ github.token }}
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
@@ -118,7 +114,9 @@ jobs:
         with:
           path: "var/${{ github.head_ref }}"
       - name: Deploy to GitHub Pages
-        id: deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          name: github-pages
         uses: actions/deploy-pages@v4
       - run: |
           gh api \
