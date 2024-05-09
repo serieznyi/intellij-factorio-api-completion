@@ -67,7 +67,7 @@ jobs:
       - run: git --no-pager branch
       - name: Run SonarQube analysis with Quality Gates
         if: github.ref != 'refs/heads/master'
-        run: ./gradlew sonar -Dsonar.branch.name=${{ github.head_ref }} --debug
+        run: ./gradlew sonar -Dsonar.branch.name=${{ github.head_ref }} --info
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Run SonarQube analysis
