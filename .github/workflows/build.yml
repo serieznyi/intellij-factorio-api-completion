@@ -105,7 +105,11 @@ jobs:
       - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/reports/${{ github.head_ref }}/junit" } }
       - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/reports/${{ github.head_ref }}/jacoco" } }
       - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/reports/${{ github.head_ref }}/pluginVerifier" } }
-      - run: cp docs/artifacts-report-page/index.html var/reports/${{ github.head_ref }}/index.html
+#      - run: cp docs/artifacts-report-page/index.html var/reports/${{ github.head_ref }}/index.html
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        with:
+          FOLDER: var/
       - run: find .
       - name: Deploy reports to GitHub Pages
         uses: actions/upload-pages-artifact@v3
