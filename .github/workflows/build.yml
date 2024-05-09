@@ -58,19 +58,13 @@ jobs:
       - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report } }
       - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report } }
       - { name: Download `compiled`, uses: actions/download-artifact@v4, with: { name: compiled } }
-      - run: find build/
+      - run: find .
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - run: git --no-pager log
-      - run: git --no-pager branch
       - name: Run SonarQube analysis with Quality Gates
         if: github.ref != 'refs/heads/master'
         run: ./gradlew sonar -Dsonar.branch.name=${{ github.head_ref }}
