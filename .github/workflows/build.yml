@@ -102,9 +102,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
-      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/reports/${{ github.head_ref }}/junit" } }
-      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/reports/${{ github.head_ref }}/jacoco" } }
-      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/reports/${{ github.head_ref }}/pluginVerifier" } }
+      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/${{ github.head_ref }}/reports/junit" } }
+      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/${{ github.head_ref }}/reports/jacoco" } }
+      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/${{ github.head_ref }}/reports/pluginVerifier" } }
 #      - run: cp docs/artifacts-report-page/index.html var/reports/${{ github.head_ref }}/index.html
       - name: Generate Directory Listings
         uses: jayanta525/github-pages-directory-listing@v4.0.0
@@ -114,7 +114,7 @@ jobs:
       - name: Deploy reports to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "var/"
+          path: "var/${{ github.head_ref }}"
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
       - run: |
@@ -124,6 +124,6 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
             -f "state=success" \
-            -f "target_url=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/reports/${{ github.head_ref }}" \
-            -f "description=Deployed reports url on Github Pages" \
+            -f "target_url=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/${{ github.head_ref }}/reports" \
+            -f "description=Reports on Github Pages" \
             -f "context=${{ github.workflow }}"
