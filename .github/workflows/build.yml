@@ -26,12 +26,7 @@ jobs:
       - { name: Setup Gradle, uses: gradle/actions/setup-gradle@v3, with: { gradle-home-cache-cleanup: true } }
       - name: Build plugin
         run: ./gradlew buildPlugin
-      - name: Upload `compiled` artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: compiled
-          path: |
-            build/classes/**/*
+      - { name: Upload `compiled` artifact, uses: actions/upload-artifact@v4, with: { name: compiled, path: build/classes/**/* } }
 
   testing:
     name: Test with coverage
@@ -41,6 +36,7 @@ jobs:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
       - { name: Set up JDK, uses: actions/setup-java@v4, with: { distribution: "${{ env.JAVA_DISTRIBUTION }}", java-version: "${{ env.JAVA_VERSION }}" } }
       - { name: Setup Gradle, uses: gradle/actions/setup-gradle@v3, with: { gradle-home-cache-cleanup: true } }
+      - { name: Download `compiled`, uses: actions/download-artifact@v4, with: { name: compiled, path: build/classes/ } }
       - name: Run tests
         run: ./gradlew check
       - { name: Upload `junit-report` artifact, uses: actions/upload-artifact@v4, with: { name: junit-report, path: build/reports/junit } }
