@@ -99,6 +99,8 @@ jobs:
       statuses: write
     env:
       GH_TOKEN: ${{ github.token }}
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
