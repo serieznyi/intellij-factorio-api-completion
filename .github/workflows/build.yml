@@ -88,15 +88,45 @@ jobs:
       - { name: Upload `intellij-verification-report` artifact, uses: actions/upload-artifact@v4, with: { name: intellij-verification-report, path: build/reports/pluginVerifier, retention-days: "${{ env.ARTIFACT_TTL }}" } }
 
   deploy-artifacts:
-    needs: [ testing, verifyPlugin ]
+    name: Deploy reports
+    needs: [testing, verifyPlugin]
+    concurrency:
+      group: factorio-api-completion
+      cancel-in-progress: false
     permissions:
       pages: write
       id-token: write
+      statuses: write
+    env:
+      GH_TOKEN: ${{ github.token }}
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy reports to GitHub Pages
+      - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
+      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/${{ github.head_ref }}/reports/junit" } }
+      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/${{ github.head_ref }}/reports/jacoco" } }
+      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/${{ github.head_ref }}/reports/pluginVerifier" } }
+      #      - run: cp docs/artifacts-report-page/index.html var/reports/${{ github.head_ref }}/index.html
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        with:
+          FOLDER: "var/${{ github.head_ref }}/reports"
+      - run: find .
+      - name: Prepare artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "var/${{ github.head_ref }}"
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
+            -f "state=success" \
+            -f "target_url=${{ steps.deployment.outputs.page_url }}" \
+            -f "description=Reports on Github Pages" \
+            -f "context=${{ github.workflow }}"
