@@ -85,3 +85,22 @@ jobs:
         if: github.ref != 'refs/heads/master'
         run: ./gradlew runPluginVerifier
       - { name: Upload `intellij-verification-report` artifact, uses: actions/upload-artifact@v4, with: { name: intellij-verification-report, path: build/reports/pluginVerifier } }
+
+  deploy-artifacts:
+    name: Deploy reports
+    needs: [testing, verifyPlugin]
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: reports/junit } }
+      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: reports/jacoco } }
+      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: reports/pluginVerifier } }
+      - { name: Upload `github-pages` artifact, uses: actions/upload-artifact@v4, with: { name: github-pages, path: build/ } }
+      - name: Deploy reports to GitHub Pages
+        uses: actions/deploy-pages@v4
+
