@@ -120,6 +120,6 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
             -f "state=success" \
-            -f "target_url=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/" \
+            -f "target_url=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/${{ github.head_ref }}" \
             -f "description=Reports"
             -f "context=${{ github.workflow }}"
