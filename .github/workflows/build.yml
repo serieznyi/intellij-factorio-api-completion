@@ -102,15 +102,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
-      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "report/${{ github.head_ref }}/junit" } }
-      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "report/${{ github.head_ref }}/jacoco" } }
-      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "report/${{ github.head_ref }}/pluginVerifier" } }
-      - run: cp docs/artifacts-report-page/index.html report/${{ github.head_ref }}/index.html
+      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/report/${{ github.head_ref }}/junit" } }
+      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/report/${{ github.head_ref }}/jacoco" } }
+      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/report/${{ github.head_ref }}/pluginVerifier" } }
+      - run: cp docs/artifacts-report-page/index.html var/report/${{ github.head_ref }}/index.html
       - run: find .
       - name: Deploy reports to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "report/"
+          path: "var/"
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
       - run: |
@@ -121,5 +121,5 @@ jobs:
             /repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
             -f "state=success" \
             -f "target_url=https://${{ github.repository_owner }}.github.io/${{ github.repository }}/${{ github.head_ref }}" \
-            -f "description=Reports" \
+            -f "description=Deployed reports url on Github Pages" \
             -f "context=${{ github.workflow }}"
