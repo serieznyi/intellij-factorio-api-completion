@@ -4,7 +4,7 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=serieznyi_intelj-factorio-api-completion&metric=bugs)](https://sonarcloud.io/summary/new_code?id=serieznyi_intelj-factorio-api-completion)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=serieznyi_intelj-factorio-api-completion&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=serieznyi_intelj-factorio-api-completion)
 
-[![Build status](https://github.com/serieznyi/intellij-factorio-api-completion/actions/workflows/gradle.yml/badge.svg?branch=master)](https://github.com/serieznyi/intellij-factorio-api-completion/actions/workflows/gradle.yml?query=branch%3Amaster)
+[![Build status](https://github.com/serieznyi/intellij-factorio-api-completion/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/serieznyi/intellij-factorio-api-completion/actions/workflows/build.yml?query=branch%3Amaster)
 [![Jetbrains plugin](https://img.shields.io/jetbrains/plugin/v/24333-factorio-api-completion.svg?style=flat-square)](https://plugins.jetbrains.com/plugin/24333-factorio-api-completion)
 
 # Description
