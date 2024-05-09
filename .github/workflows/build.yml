@@ -63,6 +63,8 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
         run: echo "$GITHUB_CONTEXT"
+      - run: git --no-pager log
+      - run: git --no-pager branch
       - name: Run SonarQube analysis with Quality Gates
         if: github.ref != 'refs/heads/master'
         run: ./gradlew sonar -Dsonar.branch.name=${{ github.head_ref }} --debug
