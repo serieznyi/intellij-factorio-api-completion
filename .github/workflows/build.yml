@@ -126,23 +126,48 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
-      - run: gh run download -n github-pages-raw --dir var/all/
-      - run: ls -l ./var/all
-#      - { name: Download `github-pages-raw`, uses: actions/download-artifact@v4, with: { name: github-pages-raw, path: var/ } }
-#      - name: Prepare artifact for GitHub Pages
-#        uses: actions/upload-pages-artifact@v3
-#        with:
-#          path: var/
-#      - name: Deploy to GitHub Pages
-#        id: deployment
-#        uses: actions/deploy-pages@v4
-#      - run: |
-#          gh api \
-#            --method POST \
-#            -H "Accept: application/vnd.github+json" \
-#            -H "X-GitHub-Api-Version: 2022-11-28" \
-#            /repos/${{ github.repository }}/statuses/${{ env.REPORT_COMMIT }} \
-#            -f "state=success" \
-#            -f "target_url=${{ steps.deployment.outputs.page_url }}/${{ env.REPORT_COMMIT }}/reports" \
-#            -f "description=Reports on Github Pages" \
-#            -f "context=${{ github.workflow }}"
+      - { name: Get branch names, id: branch-names, uses: tj-actions/branch-names@v8 }
+      - name: Save branch name in env
+        run: echo 'REPORT_BRANCH=${{ steps.branch-names.outputs.current_branch }}' >> $GITHUB_ENV
+      - name: Download all page artifacts
+        shell: bash
+        run: >-
+          set -e;
+          set -o xtrace;
+          gh api \
+            -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/actions/artifacts?name=github-pages-raw\&per_page=100 \
+            | jq ".artifacts | [ .[] | select(.expired == false) ]" \
+            | jq "[ .[] | {id: .id, branch: .workflow_run.head_branch, created: .created_at} ]" \
+            | jq "group_by(.branch) | map(max_by(.created))" \
+            | jq ".[] | [.id, .branch] | @tsv" \
+            | tr -d '"' \
+            | sed -E 's/\\t/\,/g' \
+            | while IFS="," read -r id branch; \
+              do \
+                gh api \
+                  -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+                  /repos/${{ github.repository }}/actions/artifacts/$id/zip > $branch.zip; \
+                  unzip -d var/ $branch.zip; \
+                  rm $branch.zip; \
+              done
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        with:
+          FOLDER: "var/"
+      - name: Prepare artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: var/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/statuses/${{ env.REPORT_COMMIT }} \
+            -f "state=success" \
+            -f "target_url=${{ steps.deployment.outputs.page_url }}${{ env.REPORT_BRANCH }}/reports" \
+            -f "description=Reports on Github Pages" \
+            -f "context=${{ github.workflow }}"
