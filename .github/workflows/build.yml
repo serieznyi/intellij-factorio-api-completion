@@ -91,26 +91,14 @@ jobs:
         run: ./gradlew runPluginVerifier
       - { name: Upload `intellij-verification-report` artifact, uses: actions/upload-artifact@v4, with: { name: intellij-verification-report, path: build/reports/pluginVerifier, retention-days: "${{ env.ARTIFACT_TTL }}" } }
 
-  deploy-artifacts:
-    name: Deploy reports
-    needs: [testing, verifyPlugin]
-    concurrency:
-      group: factorio-api-completion
-      cancel-in-progress: false
-    permissions:
-      pages: write
-      id-token: write
-      statuses: write
-    env:
-      GH_TOKEN: ${{ github.token }}
-      # TODO get current branch dynamically
-      REPORT_BRANCH: ${{ github.head_ref || 'master' }}
-      REPORT_COMMIT: ${{ github.event.pull_request.head.sha || github.event.after }}
-    environment:
-      name: github-pages
+  prepare-deploy-artifacts:
+    name: Prepare deploy reports
+    needs: [ testing, verifyPlugin ]
     runs-on: ubuntu-latest
     steps:
-      - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
+      - { name: Get branch names, id: branch-names, uses: tj-actions/branch-names@v8 }
+      - name: Save branch name in env
+        run: echo 'REPORT_BRANCH=${{ steps.branch-names.outputs.current_branch }}' >> $GITHUB_ENV
       - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/${{ env.REPORT_BRANCH }}/reports/junit" } }
       - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/${{ env.REPORT_BRANCH }}/reports/jacoco" } }
       - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/${{ env.REPORT_BRANCH }}/reports/pluginVerifier" } }
@@ -118,21 +106,43 @@ jobs:
         uses: jayanta525/github-pages-directory-listing@v4.0.0
         with:
           FOLDER: "var/${{ env.REPORT_BRANCH }}/reports"
-      - run: find .
-      - name: Prepare artifact for GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: var/
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-      - run: |
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/${{ github.repository }}/statuses/${{ env.REPORT_COMMIT }} \
-            -f "state=success" \
-            -f "target_url=${{ steps.deployment.outputs.page_url }}/${{ env.REPORT_COMMIT }}/reports" \
-            -f "description=Reports on Github Pages" \
-            -f "context=${{ github.workflow }}"
+      - { name: Upload `github-pages-raw` artifact, uses: actions/upload-artifact@v4, with: { name: github-pages-raw, path: "var/", retention-days: "${{ env.ARTIFACT_TTL }}" } }
+
+  deploy-artifacts:
+    name: Deploy reports
+    needs: [prepare-deploy-artifacts]
+    concurrency:
+      group: ${{ github.repository }}/deploy-artifacts
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+      statuses: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPORT_COMMIT: ${{ github.event.pull_request.head.sha || github.event.after }}
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    steps:
+      - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
+      - run: gh run download -n github-pages-raw --dir var/all/
+      - run: ls -l ./var/all
+#      - { name: Download `github-pages-raw`, uses: actions/download-artifact@v4, with: { name: github-pages-raw, path: var/ } }
+#      - name: Prepare artifact for GitHub Pages
+#        uses: actions/upload-pages-artifact@v3
+#        with:
+#          path: var/
+#      - name: Deploy to GitHub Pages
+#        id: deployment
+#        uses: actions/deploy-pages@v4
+#      - run: |
+#          gh api \
+#            --method POST \
+#            -H "Accept: application/vnd.github+json" \
+#            -H "X-GitHub-Api-Version: 2022-11-28" \
+#            /repos/${{ github.repository }}/statuses/${{ env.REPORT_COMMIT }} \
+#            -f "state=success" \
+#            -f "target_url=${{ steps.deployment.outputs.page_url }}/${{ env.REPORT_COMMIT }}/reports" \
+#            -f "description=Reports on Github Pages" \
+#            -f "context=${{ github.workflow }}"
