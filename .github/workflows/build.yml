@@ -1,18 +1,20 @@
-name: Project CI
+name: Build
 on:
   pull_request: # all PRs
   push:
     branches:
       - master
+      - develop
 env:
   JAVA_DISTRIBUTION: "temurin"
   JAVA_VERSION: "17"
   GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
   ACTIONS_STEP_DEBUG: true
+  ARTIFACT_TTL: 1
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ contains(github.ref, 'refs/pull/')}}
 
 jobs:
 
@@ -21,12 +23,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
       - { name: Gradle Wrapper Validation, uses: gradle/wrapper-validation-action@v3 }
       - { name: Set up JDK, uses: actions/setup-java@v4, with: { distribution: "${{ env.JAVA_DISTRIBUTION }}", java-version: "${{ env.JAVA_VERSION }}" } }
       - { name: Setup Gradle, uses: gradle/actions/setup-gradle@v3, with: { gradle-home-cache-cleanup: true } }
       - name: Build plugin
         run: ./gradlew buildPlugin
-      - { name: Upload `compiled` artifact, uses: actions/upload-artifact@v4, with: { name: compiled, path: build/classes/**/* } }
+      - { name: Upload `compiled` artifact, uses: actions/upload-artifact@v4, with: { name: compiled, path: build/classes/**/*, retention-days: "${{ env.ARTIFACT_TTL }}" } }
 
   testing:
     name: Test with coverage
@@ -39,8 +45,8 @@ jobs:
       - { name: Download `compiled`, uses: actions/download-artifact@v4, with: { name: compiled, path: build/classes/ } }
       - name: Run tests
         run: ./gradlew check
-      - { name: Upload `junit-report` artifact, uses: actions/upload-artifact@v4, with: { name: junit-report, path: build/reports/junit } }
-      - { name: Upload `jacoco-report` artifact, uses: actions/upload-artifact@v4, with: { name: jacoco-report, path: build/reports/jacoco } }
+      - { name: Upload `junit-report` artifact, uses: actions/upload-artifact@v4, with: { name: junit-report, path: build/reports/junit, retention-days: "${{ env.ARTIFACT_TTL }}" } }
+      - { name: Upload `jacoco-report` artifact, uses: actions/upload-artifact@v4, with: { name: jacoco-report, path: build/reports/jacoco, retention-days: "${{ env.ARTIFACT_TTL }}" } }
 
   analyse:
     name: Analyse
@@ -82,6 +88,86 @@ jobs:
       - { name: Set up JDK, uses: actions/setup-java@v4, with: { distribution: "${{ env.JAVA_DISTRIBUTION }}", java-version: "${{ env.JAVA_VERSION }}" } }
       - { name: Setup Gradle, uses: gradle/actions/setup-gradle@v3, with: { gradle-home-cache-cleanup: true } }
       - name: Run Plugin Verify
-        if: github.ref != 'refs/heads/master'
         run: ./gradlew runPluginVerifier
-      - { name: Upload `intellij-verification-report` artifact, uses: actions/upload-artifact@v4, with: { name: intellij-verification-report, path: build/reports/pluginVerifier } }
+      - { name: Upload `intellij-verification-report` artifact, uses: actions/upload-artifact@v4, with: { name: intellij-verification-report, path: build/reports/pluginVerifier, retention-days: "${{ env.ARTIFACT_TTL }}" } }
+
+  prepare-deploy-artifacts:
+    name: Prepare deploy reports
+    needs: [ testing, verifyPlugin ]
+    runs-on: ubuntu-latest
+    steps:
+      - { name: Get branch names, id: branch-names, uses: tj-actions/branch-names@v8 }
+      - name: Save branch name in env
+        run: echo 'REPORT_BRANCH=${{ steps.branch-names.outputs.current_branch }}' >> $GITHUB_ENV
+      - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/${{ env.REPORT_BRANCH }}/reports/junit" } }
+      - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/${{ env.REPORT_BRANCH }}/reports/jacoco" } }
+      - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/${{ env.REPORT_BRANCH }}/reports/pluginVerifier" } }
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        with:
+          FOLDER: "var/${{ env.REPORT_BRANCH }}/reports"
+      - { name: Upload `github-pages-raw` artifact, uses: actions/upload-artifact@v4, with: { name: github-pages-raw, path: "var/", retention-days: "${{ env.ARTIFACT_TTL }}" } }
+
+  deploy-artifacts:
+    name: Deploy reports
+    needs: [prepare-deploy-artifacts]
+    concurrency:
+      group: ${{ github.repository }}/deploy-artifacts
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+      statuses: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPORT_COMMIT: ${{ github.event.pull_request.head.sha || github.event.after }}
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    steps:
+      - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
+      - { name: Get branch names, id: branch-names, uses: tj-actions/branch-names@v8 }
+      - name: Save branch name in env
+        run: echo 'REPORT_BRANCH=${{ steps.branch-names.outputs.current_branch }}' >> $GITHUB_ENV
+      - name: Download all page artifacts
+        shell: bash
+        run: >-
+          set -e;
+          set -o xtrace;
+          gh api \
+            -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/actions/artifacts?name=github-pages-raw\&per_page=100 \
+            | jq ".artifacts | [ .[] | select(.expired == false) ]" \
+            | jq "[ .[] | {id: .id, branch: .workflow_run.head_branch, created: .created_at} ]" \
+            | jq "group_by(.branch) | map(max_by(.created))" \
+            | jq ".[] | [.id, .branch] | @tsv" \
+            | tr -d '"' \
+            | sed -E 's/\\t/\,/g' \
+            | while IFS="," read -r id branch; \
+              do \
+                gh api \
+                  -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+                  /repos/${{ github.repository }}/actions/artifacts/$id/zip > $branch.zip; \
+                  unzip -d var/ $branch.zip; \
+                  rm $branch.zip; \
+              done
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        with:
+          FOLDER: "var/"
+      - name: Prepare artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: var/
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/${{ github.repository }}/statuses/${{ env.REPORT_COMMIT }} \
+            -f "state=success" \
+            -f "target_url=${{ steps.deployment.outputs.page_url }}${{ env.REPORT_BRANCH }}/reports" \
+            -f "description=Reports on Github Pages" \
+            -f "context=${{ github.workflow }}"
