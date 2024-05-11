@@ -1,7 +1,8 @@
 package io.serieznyi.intellij.factorioapicompletion.core.factorio.version
 
-import com.intellij.util.text.SemVer
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersion.Companion.createVersion
+import io.serieznyi.intellij.factorioapicompletion.core.versioning.SemVer
+import io.serieznyi.intellij.factorioapicompletion.intellij.FactorioApiCompletionBundle
 import org.jsoup.Jsoup
 import java.io.IOException
 import java.util.*
@@ -12,10 +13,10 @@ import java.util.stream.Collectors
  *
  * @see ApiVersion
  */
-class ApiVersionResolver {
-    private val minimalSupportedVersion = SemVer("1.1.100", 1, 1, 100)
-    private val maximalSupportedVersion = SemVer("1.1.107", 1, 1, 107)
-
+class ApiVersionResolver(
+    private val minimalSupportedVersion: SemVer,
+    private val maximalSupportedVersion: SemVer
+) {
     @Throws(IOException::class)
     fun supportedVersions(): ApiVersionCollection {
         val allSupportedVersions = allVersions()
@@ -44,9 +45,11 @@ class ApiVersionResolver {
         val mainPageDoc = Jsoup.connect(VERSION_HTML_PAGE).get()
         val allLinks = mainPageDoc.select("a")
         for (link in allLinks) {
-            val semVer = SemVer.parseFromText(link.text()) ?: continue
+            val rawVersion = link.text()
 
-            versions.add(semVer)
+            if (SemVer.isValid(rawVersion)) {
+                versions.add(SemVer(rawVersion))
+            }
         }
 
         return versions
@@ -54,5 +57,13 @@ class ApiVersionResolver {
 
     companion object {
         private const val VERSION_HTML_PAGE = "https://lua-api.factorio.com/"
+
+        @JvmStatic
+        fun instance(): ApiVersionResolver {
+            val minVersionRaw = FactorioApiCompletionBundle.INSTANCE.message("supportedApiVersions.max")
+            val maxVersionRaw = FactorioApiCompletionBundle.INSTANCE.message("supportedApiVersions.min")
+
+            return ApiVersionResolver(SemVer(maxVersionRaw), SemVer(minVersionRaw))
+        }
     }
 }

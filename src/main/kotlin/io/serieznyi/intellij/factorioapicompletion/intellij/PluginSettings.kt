@@ -16,7 +16,7 @@ class PluginSettings : PersistentStateComponent<PluginSettings> {
     var useLatestApiVersion: Boolean = true
 
     @OptionTag(converter = ApiVersionConverter::class)
-    var selectedApiVersion: ApiVersion = (ApiVersionResolver().supportedVersions().latestVersion())
+    var selectedApiVersion: ApiVersion = (ApiVersionResolver.instance().supportedVersions().latestVersion())
 
     override fun getState(): PluginSettings {
         return this
