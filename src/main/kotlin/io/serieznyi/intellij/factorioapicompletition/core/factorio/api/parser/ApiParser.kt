@@ -1,6 +1,5 @@
 package io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser
 
-import com.google.gson.GsonBuilder
 import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.ApiData
 import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.PrototypeApiData
 import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.RuntimeApiData
@@ -11,7 +10,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URL
 
-class ApiParser {
+class ApiParser(private val throwOnUnknownType: Boolean = false) {
     fun parse(apiVersion: ApiVersion): ApiData {
         return ApiData(
             parsePrototypeApiData(apiVersion),
@@ -22,7 +21,7 @@ class ApiParser {
     private fun parseRuntimeApi(apiVersion: ApiVersion): RuntimeApiData {
         InputStreamReader(createJsonStream(RUNTIME_API_BASE_URL, apiVersion)).use { reader ->
             return GsonBuilderHolder
-                .gson()
+                .gson(this.throwOnUnknownType)
                 .create()
                 .fromJson(reader, RuntimeApiData::class.java)
         }
@@ -31,7 +30,7 @@ class ApiParser {
     private fun parsePrototypeApiData(apiVersion: ApiVersion): PrototypeApiData {
         InputStreamReader(createJsonStream(PROTOTYPE_API_BASE_URL, apiVersion)).use { reader ->
             return GsonBuilderHolder
-                .gson()
+                .gson(this.throwOnUnknownType)
                 .create()
                 .fromJson(reader, PrototypeApiData::class.java)
         }

@@ -6,9 +6,9 @@ import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.de
 
 class GsonBuilderHolder {
     companion object {
-        fun gson(): GsonBuilder {
+        fun gson(throwOnUnknownType: Boolean = false): GsonBuilder {
             return GsonBuilder()
-                .registerTypeAdapter(ValueType::class.java, ValueTypeJsonDeserializer())
+                .registerTypeAdapter(ValueType::class.java, ValueTypeJsonDeserializer(throwOnUnknownType))
         }
     }
 }

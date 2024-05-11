@@ -83,8 +83,6 @@ interface ValueType {
     @JvmRecord
     data class LuaLazyLoadedValue(val value: ValueType) : ValueType
 
-    object Unknown : ValueType
-
     companion object {
         private fun nativeNamesPerType(): Map<Class<out ValueType>, String> {
             return TYPES_PER_NATIVE_NAME.map { (k, v) -> v to k }.toMap()

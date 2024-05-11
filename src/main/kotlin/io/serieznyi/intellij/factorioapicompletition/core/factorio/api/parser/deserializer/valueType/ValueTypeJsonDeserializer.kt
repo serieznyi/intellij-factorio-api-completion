@@ -5,7 +5,7 @@ import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.da
 import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.util.GsonBuilderHolder
 import java.lang.reflect.Type as ReflectType
 
-class ValueTypeJsonDeserializer : JsonDeserializer<ValueType> {
+class ValueTypeJsonDeserializer(private val throwOnUnknownType: Boolean) : JsonDeserializer<ValueType> {
     @Throws(JsonParseException::class)
     override fun deserialize(
         jsonElement: JsonElement,
@@ -23,23 +23,22 @@ class ValueTypeJsonDeserializer : JsonDeserializer<ValueType> {
         return null
     }
 
-    private fun deserializeComplexType(jsonElement: JsonElement): ValueType {
+    private fun deserializeComplexType(jsonElement: JsonElement): ValueType? {
         try {
             val jsonObject = jsonElement.asJsonObject
             val complexTypeNativeName = jsonObject["complex_type"].asString
             val clazz = getTypeClass(complexTypeNativeName)
 
             return GsonBuilderHolder
-                .gson()
+                .gson(this.throwOnUnknownType)
                 .create()
                 .fromJson(jsonElement, clazz)
         } catch (e: UnknownComplexTypeException) {
-            // todo enable dynamicaly for tests
-            if (false) {
+            if (this.throwOnUnknownType) {
                 throw e
             }
 
-            return ValueType.Unknown
+            return null;
         }
     }
 
