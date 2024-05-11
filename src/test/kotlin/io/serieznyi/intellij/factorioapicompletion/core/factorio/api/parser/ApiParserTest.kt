@@ -23,9 +23,9 @@ class ApiParserTest {
     @ParameterizedTest
     @MethodSource("parseProvider")
     fun parse(apiVersion: ApiVersion) {
-        var api = apiParser.parse(apiVersion)
-
-        assertDoesNotThrow {}
+        assertDoesNotThrow {
+            apiParser.parse(apiVersion)
+        }
     }
 
     companion object {
