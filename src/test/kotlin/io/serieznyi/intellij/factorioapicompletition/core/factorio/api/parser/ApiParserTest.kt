@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
 class ApiParserTest {
-    private val apiParser = ApiParser();
+    private val apiParser = ApiParser(throwOnUnknownType = true);
 
     @BeforeEach
     fun setUp() {
