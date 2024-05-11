@@ -1,26 +1,24 @@
 package io.serieznyi.intellij.factorioapicompletion.core.factorio.version
 
 import io.serieznyi.intellij.factorioapicompletion.core.cache.FileCache
+import io.serieznyi.intellij.factorioapicompletion.core.util.io.findOrCreateDirectory
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.io.CleanupMode
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Duration
-import kotlin.io.path.createDirectory
 
 class HttpApiVersionResolverTest {
     private lateinit var apiVersionResolver: ApiVersionResolver
 
     @org.junit.jupiter.api.BeforeEach
     fun setUp(@TempDir(cleanup = CleanupMode.NEVER) tempDir: Path) {
-        val cacheDir = Paths.get(System.getenv("BUILD_DIR_PATH")).resolve("apiVersions")
-
-        cacheDir.createDirectory()
+        val cacheDir = Paths.get(System.getenv("BUILD_DIR_PATH")).resolve("cache")
 
         apiVersionResolver = FileCacheApiVersionResolver(
             apiVersionResolver = ApiVersionResolverHolder.get(),
-            cache = FileCache(cacheDir, Duration.ofMinutes(60))
+            cache = FileCache(cacheDir.findOrCreateDirectory(), Duration.ofMinutes(60))
         )
     }
 

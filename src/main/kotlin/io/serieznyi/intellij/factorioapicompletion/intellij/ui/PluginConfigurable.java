@@ -53,7 +53,7 @@ class PluginConfigurable implements SearchableConfigurable {
             var apiService = project.getService(ApiService.class);
 
             if (isVersionChanged()) {
-                apiService.reloadApi();
+                apiService.downloadApi();
             }
 
             pluginSettings.setUseLatestApiVersion(isUseLatestVersion());
@@ -108,7 +108,7 @@ class PluginConfigurable implements SearchableConfigurable {
         }
 
         reloadButton.addActionListener(actionEvent -> {
-            project.getService(ApiService.class).reloadApi();
+            project.getService(ApiService.class).downloadApi();
         });
     }
 

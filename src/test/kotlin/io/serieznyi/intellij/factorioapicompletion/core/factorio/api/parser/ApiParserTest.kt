@@ -1,11 +1,11 @@
 package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser
 
-import com.intellij.openapi.util.io.findOrCreateDirectory
 import io.serieznyi.intellij.factorioapicompletion.core.cache.FileCache
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.source.FileCacheDataSourceFactory
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.source.HttpDataSourceFactory
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersion
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolverHolder
+import io.serieznyi.intellij.factorioapicompletion.core.util.io.findOrCreateDirectory
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -23,7 +23,7 @@ class ApiParserTest {
 
     @BeforeEach
     fun setUp(@TempDir(cleanup = CleanupMode.NEVER) tempDir: Path) {
-        val cacheDir = Paths.get(System.getenv("BUILD_DIR_PATH")).resolve(ApiParserTest::class.simpleName.toString())
+        val cacheDir = Paths.get(System.getenv("BUILD_DIR_PATH")).resolve("cache")
 
         apiParser = ApiParser(
             FileCacheDataSourceFactory(
