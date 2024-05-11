@@ -94,7 +94,7 @@ jobs:
           grep "supportedApiVersions.max" src/main/resources/FactorioApiCompletion.properties \
             | awk -F '=' '{print $2}' \
             | { read VAR; echo "LAST_SUPPORTED_API_VERSION=$VAR" >> $GITHUB_ENV; }
-      - name: Check version
+      - name: Fail if not support latest version
         if: ${{ env.LAST_API_VERSION != env.LAST_SUPPORTED_API_VERSION }}
         uses: actions/github-script@v3
         with:
