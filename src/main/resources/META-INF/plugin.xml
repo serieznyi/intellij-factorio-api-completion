@@ -35,10 +35,10 @@
     <extensions defaultExtensionNs="com.intellij">
         <projectConfigurable groupId="language" displayName="Factorio API Completion"
                              id="preference.FactorioCompletionConfig"
-                             instance="io.serieznyi.intellij.factorioapicompletition.intellij.ui.PluginConfigurable"/>
+                             instance="io.serieznyi.intellij.factorioapicompletion.intellij.ui.PluginConfigurable"/>
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
-        <ProviderFactory implementation="io.serieznyi.intellij.factorioapicompletition.intellij.FactorioModInfoSchemaProviderFactory"/>
+        <ProviderFactory implementation="io.serieznyi.intellij.factorioapicompletion.intellij.FactorioModInfoSchemaProviderFactory"/>
     </extensions>
 </idea-plugin>
