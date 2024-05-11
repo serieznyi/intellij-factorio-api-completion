@@ -81,7 +81,6 @@ jobs:
   checkApiVersion:
     name: Check API version
     runs-on: ubuntu-latest
-    needs: [ testing ]
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
       - name: Parse last exists API version
