@@ -1,7 +1,7 @@
-package io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.child.prototype
+package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.prototype
 
-import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.child.Property
-import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.child.ValueType
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.Property
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.ValueType
 
 data class Type(
     val name: String,

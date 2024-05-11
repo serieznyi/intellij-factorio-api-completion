@@ -1,8 +1,8 @@
-package io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.util
+package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.util
 
 import com.google.gson.GsonBuilder
-import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.child.ValueType
-import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.deserializer.valueType.ValueTypeJsonDeserializer
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.ValueType
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.deserializer.valueType.ValueTypeJsonDeserializer
 
 class GsonBuilderHolder {
     companion object {

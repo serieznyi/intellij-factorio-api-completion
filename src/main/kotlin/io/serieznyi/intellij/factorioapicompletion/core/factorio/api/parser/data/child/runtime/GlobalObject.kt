@@ -1,6 +1,6 @@
-package io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.child.runtime
+package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.runtime
 
-import io.serieznyi.intellij.factorioapicompletition.core.factorio.api.parser.data.child.ValueType
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.ValueType
 
 data class GlobalObject(
     val name: String,
