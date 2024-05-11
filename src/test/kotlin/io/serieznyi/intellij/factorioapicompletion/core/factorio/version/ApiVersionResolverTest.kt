@@ -3,7 +3,7 @@ package io.serieznyi.intellij.factorioapicompletion.core.factorio.version
 import org.junit.jupiter.api.Assertions
 
 class ApiVersionResolverTest {
-    private var apiVersionResolver: ApiVersionResolver = ApiVersionResolver()
+    private var apiVersionResolver: ApiVersionResolver = ApiVersionResolver.instance()
 
     @org.junit.jupiter.api.BeforeEach
     fun setUp() {

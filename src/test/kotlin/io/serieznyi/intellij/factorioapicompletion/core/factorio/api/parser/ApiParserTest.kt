@@ -31,7 +31,7 @@ class ApiParserTest {
     companion object {
         @JvmStatic
         fun parseProvider(): Stream<ApiVersion> {
-            return ApiVersionResolver().supportedVersions().reversed().stream()
+            return ApiVersionResolver.instance().supportedVersions().reversed().stream()
         }
     }
 }

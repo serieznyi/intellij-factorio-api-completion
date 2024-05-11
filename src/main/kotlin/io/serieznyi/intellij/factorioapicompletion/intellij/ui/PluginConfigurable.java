@@ -27,7 +27,7 @@ class PluginConfigurable implements SearchableConfigurable {
         pluginSettings = project.getService(PluginSettings.class);
         this.project = project;
 
-        apiVersionResolver = new ApiVersionResolver();
+        apiVersionResolver = ApiVersionResolver.instance();
 
         buildUiComponents();
     }
