@@ -2,9 +2,10 @@ package io.serieznyi.intellij.factorioapicompletion.intellij.ui;
 
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolver;
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolverHolder;
 import io.serieznyi.intellij.factorioapicompletion.intellij.ApiService;
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersion;
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolver;
 import io.serieznyi.intellij.factorioapicompletion.intellij.PluginSettings;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +28,7 @@ class PluginConfigurable implements SearchableConfigurable {
         pluginSettings = project.getService(PluginSettings.class);
         this.project = project;
 
-        apiVersionResolver = ApiVersionResolver.instance();
+        apiVersionResolver = ApiVersionResolverHolder.get();
 
         buildUiComponents();
     }

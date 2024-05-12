@@ -1,7 +1,7 @@
 package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser
 
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersion
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolver
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolverHolder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -31,7 +31,7 @@ class ApiParserTest {
     companion object {
         @JvmStatic
         fun parseProvider(): Stream<ApiVersion> {
-            return ApiVersionResolver.instance().supportedVersions().reversed().stream()
+            return ApiVersionResolverHolder.get().supportedVersions().reversed().stream()
         }
     }
 }
