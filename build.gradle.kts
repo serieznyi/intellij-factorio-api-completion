@@ -67,6 +67,8 @@ jacoco {
 
 tasks {
     withType<Test> {
+        environment["BUILD_DIR_PATH"] = project.layout.buildDirectory.get().toString()
+
         configure<JacocoTaskExtension> {
             // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin-faq.html#jacoco-reports-0-coverage
             isIncludeNoLocationClasses = true
