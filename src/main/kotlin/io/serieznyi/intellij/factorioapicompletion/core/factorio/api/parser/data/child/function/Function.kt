@@ -1,10 +1,10 @@
-package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.runtime
+package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.function
 
 import com.google.gson.annotations.SerializedName
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.Parameter
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.runtime.method.ReturnValue
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.ValueType
 
-data class GlobalFunction(
+data class Function(
     val name: String,
     val order: Int,
     val description: String,
@@ -13,4 +13,11 @@ data class GlobalFunction(
     val takesTable: Boolean,
     @field:SerializedName("return_values")
     val returnValues: List<ReturnValue>,
-)
+) {
+    data class ReturnValue(
+        val order: Int,
+        val description: String,
+        val type: ValueType,
+        val optional: Boolean,
+    )
+}
