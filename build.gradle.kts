@@ -7,7 +7,7 @@ project.ext["repositoryUrl"] = "https://github.com/serieznyi/intellij-factorio-a
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.23"
+    id("org.jetbrains.kotlin.jvm") version "1.9.24"
     id("org.jetbrains.intellij") version "1.17.3"
     id("jacoco")
     id("org.jetbrains.changelog") version "2.2.0"
