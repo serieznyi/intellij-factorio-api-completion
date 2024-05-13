@@ -96,7 +96,7 @@ jobs:
             | { read VAR; echo "LAST_SUPPORTED_API_VERSION=$VAR" >> $GITHUB_ENV; }
       - name: Fail if not support latest version
         if: ${{ env.LAST_API_VERSION != env.LAST_SUPPORTED_API_VERSION }}
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           script: core.setFailed('Plugin not support latest API version')
 
