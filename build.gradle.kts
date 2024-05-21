@@ -43,8 +43,8 @@ intellij {
 
     plugins.set(
         listOf(
-            // See https://plugins.jetbrains.com/plugin/9768-emmylua/versions
-            "com.tang:1.4.7-IDEA231"
+            // See https://plugins.jetbrains.com/plugin/14698-luanalysis
+            "au.com.glassechidna.luanalysis:1.4.0",
         )
     )
 }
