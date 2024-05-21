@@ -33,9 +33,13 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
+        <postStartupActivity implementation="io.serieznyi.intellij.factorioapicompletion.intellij.FactorioStartupActivity"/>
+
         <projectConfigurable groupId="language" displayName="Factorio API Completion"
                              id="preference.FactorioCompletionConfig"
-                             instance="io.serieznyi.intellij.factorioapicompletion.intellij.ui.PluginConfigurable"/>
+                             instance="io.serieznyi.intellij.factorioapicompletion.intellij.ui.PluginConfigurable" />
+
+        <additionalLibraryRootsProvider implementation="io.serieznyi.intellij.factorioapicompletion.intellij.FactorioApiProvider" />
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
