@@ -4,6 +4,6 @@ import java.util.*
 
 class ApiVersionCollection : TreeSet<ApiVersion>() {
     fun latestVersion(): ApiVersion {
-        return this.first()
+        return this.maxOf { it }
     }
 }
