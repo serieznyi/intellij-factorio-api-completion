@@ -6,9 +6,8 @@ import com.intellij.openapi.project.Project
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.ApiParser
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.source.FileCacheDataSourceFactory
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.source.HttpDataSourceFactory
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolverHolder
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.FileCacheApiVersionResolver
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.writer.ApiWriterWrapper
+import io.serieznyi.intellij.factorioapicompletion.core.factory.ApiVersionResolverFactory
 import io.serieznyi.intellij.factorioapicompletion.core.factory.CacheFactory
 import io.serieznyi.intellij.factorioapicompletion.core.util.io.findOrCreateDirectory
 import java.nio.file.Path
@@ -18,9 +17,8 @@ class ApiService(private val project: Project) {
     fun downloadApi() {
         val apiDir = FilesystemUtil.apiVersionsDir()
         val cache = CacheFactory.fileCache()
-        val apiVersionResolver = FileCacheApiVersionResolver(ApiVersionResolverHolder.get(), cache)
         val apiParser = ApiParser(FileCacheDataSourceFactory(HttpDataSourceFactory(), cache), false)
-        val apiVersion = apiVersionResolver.supportedVersions().latestVersion()
+        val apiVersion = ApiVersionResolverFactory.create().supportedVersions().latestVersion()
         val writer = ApiWriterWrapper()
         val apiData = apiParser.parse(apiVersion)
 
