@@ -5,8 +5,7 @@ import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.ApiP
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.source.FileCacheDataSourceFactory
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.source.HttpDataSourceFactory
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolver
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolverHolder
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.FileCacheApiVersionResolver
+import io.serieznyi.intellij.factorioapicompletion.core.factory.ApiVersionResolverFactory
 import io.serieznyi.intellij.factorioapicompletion.core.util.io.findOrCreateDirectory
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -31,10 +30,7 @@ class ApiWriterWrapperTest {
 
         val fileCache = FileCache(cacheDir, Duration.ofDays(14))
 
-        apiVersionResolver = FileCacheApiVersionResolver(
-            ApiVersionResolverHolder.get(),
-            fileCache
-        )
+        apiVersionResolver = ApiVersionResolverFactory.create(cacheDir)
 
         apiParser = ApiParser(
             FileCacheDataSourceFactory(

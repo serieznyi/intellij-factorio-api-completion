@@ -50,7 +50,9 @@ class FileCache(private val cacheDir: Path, private val defaultTtl: Duration = D
             return null
         }
 
-        return cacheFile.readLines().last()
+        val lines = cacheFile.readLines()
+
+        return lines.slice(1 until lines.size).joinToString (System.lineSeparator())
     }
 
     private fun garbageCollect() {
