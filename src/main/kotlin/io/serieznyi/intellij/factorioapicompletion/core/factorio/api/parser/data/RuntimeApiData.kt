@@ -1,6 +1,7 @@
 package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data
 
 import com.google.gson.annotations.SerializedName
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.function.Function
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child.runtime.*
 
 data class RuntimeApiData(
@@ -13,7 +14,6 @@ data class RuntimeApiData(
     @field:SerializedName("global_objects")
     val globalObjects: List<GlobalObject>,
     @field:SerializedName("global_functions")
-    val globalFunctions: List<GlobalFunction>,
+    val globalFunctions: List<Function>,
 ) {
-
 }
