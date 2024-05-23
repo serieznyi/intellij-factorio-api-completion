@@ -2,9 +2,10 @@ package io.serieznyi.intellij.factorioapicompletion.intellij.ui;
 
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
+import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolver;
+import io.serieznyi.intellij.factorioapicompletion.core.factory.ApiVersionResolverFactory;
 import io.serieznyi.intellij.factorioapicompletion.intellij.ApiService;
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersion;
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolver;
 import io.serieznyi.intellij.factorioapicompletion.intellij.PluginSettings;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +28,7 @@ class PluginConfigurable implements SearchableConfigurable {
         pluginSettings = project.getService(PluginSettings.class);
         this.project = project;
 
-        apiVersionResolver = ApiVersionResolver.instance();
+        apiVersionResolver = ApiVersionResolverFactory.Companion.create(null);
 
         buildUiComponents();
     }
@@ -52,7 +53,7 @@ class PluginConfigurable implements SearchableConfigurable {
             var apiService = project.getService(ApiService.class);
 
             if (isVersionChanged()) {
-                apiService.reloadApi();
+                apiService.downloadApi();
             }
 
             pluginSettings.setUseLatestApiVersion(isUseLatestVersion());
@@ -107,7 +108,7 @@ class PluginConfigurable implements SearchableConfigurable {
         }
 
         reloadButton.addActionListener(actionEvent -> {
-            project.getService(ApiService.class).reloadApi();
+            project.getService(ApiService.class).downloadApi();
         });
     }
 

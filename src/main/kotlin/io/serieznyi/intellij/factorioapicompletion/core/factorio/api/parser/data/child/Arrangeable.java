@@ -1,5 +1,5 @@
 package io.serieznyi.intellij.factorioapicompletion.core.factorio.api.parser.data.child;
 
-interface Arrangeable {
+public interface Arrangeable {
     void arrangeElements();
 }

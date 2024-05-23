@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.guava:guava:33.2.0-jre")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -42,8 +43,8 @@ intellij {
 
     plugins.set(
         listOf(
-            // See https://plugins.jetbrains.com/plugin/9768-emmylua/versions
-            "com.tang:1.4.7-IDEA231"
+            // See https://plugins.jetbrains.com/plugin/14698-luanalysis
+            "au.com.glassechidna.luanalysis:1.4.0",
         )
     )
 }
@@ -67,6 +68,8 @@ jacoco {
 
 tasks {
     withType<Test> {
+        environment["BUILD_DIR_PATH"] = project.layout.buildDirectory.get().toString()
+
         configure<JacocoTaskExtension> {
             // https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin-faq.html#jacoco-reports-0-coverage
             isIncludeNoLocationClasses = true
