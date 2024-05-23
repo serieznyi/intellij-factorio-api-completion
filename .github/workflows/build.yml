@@ -116,6 +116,7 @@ jobs:
     name: Prepare deploy reports
     needs: [ testing, verifyPlugin ]
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.ref, 'dependabot/')}}
     steps:
       - { name: Get branch names, id: branch-names, uses: tj-actions/branch-names@v8 }
       - name: Save branch name in env
@@ -145,6 +146,7 @@ jobs:
     environment:
       name: github-pages
     runs-on: ubuntu-latest
+    if: ${{ contains(github.ref, 'dependabot/')}}
     steps:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
       - { name: Get branch names, id: branch-names, uses: tj-actions/branch-names@v8 }
