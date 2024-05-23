@@ -96,7 +96,7 @@ jobs:
             | { read VAR; echo "LAST_SUPPORTED_API_VERSION=$VAR" >> $GITHUB_ENV; }
       - name: Fail if not support latest version
         if: ${{ env.LAST_API_VERSION != env.LAST_SUPPORTED_API_VERSION }}
-        uses: actions/github-script@v3
+        uses: actions/github-script@v7
         with:
           script: core.setFailed('Plugin not support latest API version')
 
@@ -119,7 +119,7 @@ jobs:
     steps:
       - { name: Get branch names, id: branch-names, uses: tj-actions/branch-names@v8 }
       - name: Save branch name in env
-        run: echo 'REPORT_BRANCH=${{ steps.branch-names.outputs.current_branch }}' >> $GITHUB_ENV
+        run: echo 'REPORT_BRANCH=${{ steps.branch-names.outputs.current_branch }}' | sed 's/\//-/g' >> $GITHUB_ENV
       - { name: Download `junit-report`, uses: actions/download-artifact@v4, with: { name: junit-report, path: "var/${{ env.REPORT_BRANCH }}/reports/junit" } }
       - { name: Download `jacoco-report`, uses: actions/download-artifact@v4, with: { name: jacoco-report, path: "var/${{ env.REPORT_BRANCH }}/reports/jacoco" } }
       - { name: Download `intellij-verification-report`, uses: actions/download-artifact@v4, with: { name: intellij-verification-report, path: "var/${{ env.REPORT_BRANCH }}/reports/pluginVerifier" } }
@@ -149,7 +149,7 @@ jobs:
       - { name: Fetch sources, uses: actions/checkout@v4, with: { fetch-depth: 0 } }
       - { name: Get branch names, id: branch-names, uses: tj-actions/branch-names@v8 }
       - name: Save branch name in env
-        run: echo 'REPORT_BRANCH=${{ steps.branch-names.outputs.current_branch }}' >> $GITHUB_ENV
+        run: echo 'REPORT_BRANCH=${{ steps.branch-names.outputs.current_branch }}' | sed 's/\//-/g' >> $GITHUB_ENV
       - name: Download all page artifacts
         shell: bash
         run: >-
@@ -166,11 +166,12 @@ jobs:
             | sed -E 's/\\t/\,/g' \
             | while IFS="," read -r id branch; \
               do \
+                BRANCH="$(echo $branch | sed 's/\//-/g')"; \
                 gh api \
                   -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" \
-                  /repos/${{ github.repository }}/actions/artifacts/$id/zip > $branch.zip; \
-                  unzip -d var/ $branch.zip; \
-                  rm $branch.zip; \
+                  /repos/${{ github.repository }}/actions/artifacts/$id/zip > $BRANCH.zip; \
+                  unzip -d var/ $BRANCH.zip; \
+                  rm $BRANCH.zip; \
               done
       - name: Generate Directory Listings
         uses: jayanta525/github-pages-directory-listing@v4.0.0
