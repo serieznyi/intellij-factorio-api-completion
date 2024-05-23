@@ -7,8 +7,12 @@ import java.nio.file.Path
 
 class CacheFactory {
     companion object {
-        fun fileCache(cacheDir: Path = FilesystemUtil.cacheDir()): Cache {
-            return FileCache(cacheDir)
+        fun create(cacheDir: Path? = null): Cache {
+            if (cacheDir != null) {
+                return FileCache(cacheDir)
+            }
+
+            return FileCache(FilesystemUtil.cacheDir())
         }
     }
 }

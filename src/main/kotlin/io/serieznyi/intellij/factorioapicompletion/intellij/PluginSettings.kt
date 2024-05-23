@@ -8,7 +8,7 @@ import com.intellij.util.xmlb.Converter
 import com.intellij.util.xmlb.XmlSerializerUtil
 import com.intellij.util.xmlb.annotations.OptionTag
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersion
-import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.ApiVersionResolverHolder
+import io.serieznyi.intellij.factorioapicompletion.core.factory.ApiVersionResolverFactory
 
 @Service(Service.Level.PROJECT)
 @State(name = "FactorioApiCompletionSettings", storages = [(Storage("factorio-api-completion-settings.xml"))])
@@ -16,7 +16,7 @@ class PluginSettings : PersistentStateComponent<PluginSettings> {
     var useLatestApiVersion: Boolean = true
 
     @OptionTag(converter = ApiVersionConverter::class)
-    var selectedApiVersion: ApiVersion = (ApiVersionResolverHolder.get().supportedVersions().latestVersion())
+    var selectedApiVersion: ApiVersion = ApiVersionResolverFactory.create().supportedVersions().latestVersion()
 
     override fun getState(): PluginSettings {
         return this

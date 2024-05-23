@@ -24,17 +24,15 @@ class ApiParserTest {
     private lateinit var apiVersionResolver: ApiVersionResolver
 
     @BeforeEach
-    fun setUp(@TempDir(cleanup = CleanupMode.NEVER) tempDir: Path) {
-        val cacheDir = Paths.get(System.getenv("BUILD_DIR_PATH")).resolve("cache")
-
+    fun setUp() {
         apiParser = ApiParser(
             FileCacheDataSourceFactory(
                 HttpDataSourceFactory(),
-                FileCache(cacheDir.findOrCreateDirectory(), Duration.ofDays(14))
+                FileCache(cacheDir(), Duration.ofDays(14))
             ),
             throwOnUnknownType = true
         )
-        apiVersionResolver = ApiVersionResolverFactory.create(cacheDir)
+        apiVersionResolver = ApiVersionResolverFactory.create(cacheDir())
     }
 
     @AfterEach
@@ -52,7 +50,12 @@ class ApiParserTest {
     companion object {
         @JvmStatic
         fun parseProvider(): Stream<ApiVersion> {
-            return ApiVersionResolverFactory.create().supportedVersions().reversed().stream()
+            return ApiVersionResolverFactory.create(cacheDir()).supportedVersions().reversed().stream()
+        }
+
+        @JvmStatic
+        private fun cacheDir(): Path {
+            return Paths.get(System.getenv("BUILD_DIR_PATH")).resolve("cache").findOrCreateDirectory()
         }
     }
 }

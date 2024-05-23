@@ -16,7 +16,7 @@ import java.nio.file.Path
 class ApiService(private val project: Project) {
     fun downloadApi() {
         val apiDir = FilesystemUtil.apiVersionsDir()
-        val cache = CacheFactory.fileCache()
+        val cache = CacheFactory.create()
         val apiParser = ApiParser(FileCacheDataSourceFactory(HttpDataSourceFactory(), cache), false)
         val apiVersion = ApiVersionResolverFactory.create().supportedVersions().latestVersion()
         val writer = ApiWriterWrapper()

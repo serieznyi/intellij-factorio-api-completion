@@ -18,11 +18,6 @@ class ApiServiceTest : BasePlatformTestCase() {
         apiService = ApiService(project)
     }
 
-    @AfterEach
-    override fun tearDown() {
-        super.tearDown()
-    }
-
     @Test
     fun downloadApi() {
         assertDoesNotThrow {

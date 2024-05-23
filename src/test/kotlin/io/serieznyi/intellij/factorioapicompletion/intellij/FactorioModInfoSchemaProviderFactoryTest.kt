@@ -5,16 +5,6 @@ import com.jetbrains.jsonSchema.extension.SchemaType
 
 class FactorioModInfoSchemaProviderFactoryTest : BasePlatformTestCase() {
 
-    @org.junit.jupiter.api.BeforeEach
-    override fun setUp() {
-        super.setUp()
-    }
-
-    @org.junit.jupiter.api.AfterEach
-    override fun tearDown() {
-        super.tearDown()
-    }
-
     @org.junit.jupiter.api.Test
     fun testProviderWork() {
         val service = FactorioModInfoSchemaProviderFactory();

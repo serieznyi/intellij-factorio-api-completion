@@ -5,16 +5,21 @@ import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.FileCac
 import io.serieznyi.intellij.factorioapicompletion.core.factorio.version.HttpApiVersionResolver
 import io.serieznyi.intellij.factorioapicompletion.core.versioning.SemVer
 import io.serieznyi.intellij.factorioapicompletion.intellij.FactorioApiCompletionBundle
+import java.nio.file.Path
 
 class ApiVersionResolverFactory {
     companion object {
-        fun create(): ApiVersionResolver {
+        private fun http(): ApiVersionResolver {
             val minVersionRaw = FactorioApiCompletionBundle.INSTANCE.message("supportedApiVersions.max")
             val maxVersionRaw = FactorioApiCompletionBundle.INSTANCE.message("supportedApiVersions.min")
 
+            return HttpApiVersionResolver(SemVer(maxVersionRaw), SemVer(minVersionRaw))
+        }
+
+        fun create(cacheDir: Path? = null): ApiVersionResolver {
             return FileCacheApiVersionResolver(
-                HttpApiVersionResolver(SemVer(maxVersionRaw), SemVer(minVersionRaw)),
-                CacheFactory.fileCache()
+                http(),
+                CacheFactory.create(cacheDir)
             )
         }
     }
