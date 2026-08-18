@@ -1,0 +1,52 @@
+package io.serieznyi.intellij.factorioapicompletion.core.parser.api;
+
+import com.intellij.openapi.util.io.FileUtil;
+import io.serieznyi.intellij.factorioapicompletion.core.parser.api.data.RuntimeApi;
+import io.serieznyi.intellij.factorioapicompletion.core.parser.api.writer.ApiFileWriter;
+import io.serieznyi.intellij.factorioapicompletion.core.version.FactorioApiVersion;
+import moe.knox.factorio.core.parser.api.data.*;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Optional;
+
+public class ApiParser {
+    private final Path apiRootPath;
+    private final RuntimeApiParser runtimeApiParser;
+
+    public ApiParser(Path apiRootPath) {
+        this.apiRootPath = apiRootPath;
+        runtimeApiParser = new RuntimeApiParser();
+    }
+
+    public Optional<Path> getApiPath(FactorioApiVersion version) {
+        Path versionPath = getVersionPath(version);
+
+        return Files.exists(versionPath) ? Optional.of(versionPath) : Optional.empty();
+    }
+
+    public void removeCurrentAPI() {
+        FileUtil.delete(apiRootPath.toFile());
+    }
+
+    public void parse(FactorioApiVersion version) throws IOException {
+        Path versionPath = getVersionPath(version);
+
+        Files.createDirectories(versionPath);
+
+        RuntimeApi runtimeApi = runtimeApiParser.parse(version);
+
+        var outputFileName = versionPath.resolve("factorio.lua").toFile();
+
+        try (var writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)))) {
+            ApiFileWriter.fromIoWriter(writer).writeRuntimeApi(runtimeApi);
+
+            writer.flush();
+        }
+    }
+
+    private Path getVersionPath(FactorioApiVersion version) {
+        return apiRootPath.resolve(version.version());
+    }
+}

@@ -18,33 +18,33 @@
     <extensions defaultExtensionNs="com.intellij">
         <projectConfigurable groupId="language" displayName="Factorio Autocompletion"
                              id="preference.FactorioCompletionConfig"
-                             instance="moe.knox.factorio.intellij.FactorioConfig"/>
-        <projectService serviceImplementation="moe.knox.factorio.intellij.FactorioState"/>
-        <postStartupActivity implementation="moe.knox.factorio.intellij.FactorioStartupActivity"/>
+                             instance="io.serieznyi.intellij.factorioapicompletion.intellij.FactorioConfig"/>
+        <projectService serviceImplementation="io.serieznyi.intellij.factorioapicompletion.intellij.FactorioState"/>
+        <postStartupActivity implementation="io.serieznyi.intellij.factorioapicompletion.intellij.FactorioStartupActivity"/>
 
-        <additionalLibraryRootsProvider implementation="moe.knox.factorio.intellij.FactorioLibraryProvider"/>
+        <additionalLibraryRootsProvider implementation="io.serieznyi.intellij.factorioapicompletion.intellij.FactorioLibraryProvider"/>
 
         <completion.contributor language="Lua"
-                                implementationClass="moe.knox.factorio.intellij.completion.MainCompletionContributor"
+                                implementationClass="io.serieznyi.intellij.factorioapicompletion.intellij.completion.MainCompletionContributor"
                                 order="first"/>
         <completion.contributor language="Lua"
-                                implementationClass="moe.knox.factorio.intellij.completion.DataRawCompletionContributor"
+                                implementationClass="io.serieznyi.intellij.factorioapicompletion.intellij.completion.DataRawCompletionContributor"
                                 order="first"/>
 
-        <fileBasedIndex implementation="moe.knox.factorio.intellij.PrototypeFileIndexer"/>
+        <fileBasedIndex implementation="io.serieznyi.intellij.factorioapicompletion.intellij.PrototypeFileIndexer"/>
 
         <notificationGroup displayType="STICKY_BALLOON" id="Factorio LUA API Support"/>
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript.JsonSchema">
-        <ProviderFactory implementation="moe.knox.factorio.json.FactorioSchemaProviderFactory"/>
+        <ProviderFactory implementation="io.serieznyi.intellij.factorioapicompletion.json.FactorioSchemaProviderFactory"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.tang.intellij.lua">
-        <luaFileResolver implementation="moe.knox.factorio.tang.file.resolver.FactorioRootDir" order="first"/>
-        <luaFileResolver implementation="moe.knox.factorio.tang.file.resolver.FactorioLualib" order="first"/>
+        <luaFileResolver implementation="io.serieznyi.intellij.factorioapicompletion.tang.file.resolver.FactorioRootDir" order="first"/>
+        <luaFileResolver implementation="io.serieznyi.intellij.factorioapicompletion.tang.file.resolver.FactorioLualib" order="first"/>
 
-        <luaTypeInfer implementation="moe.knox.factorio.tang.DataRawTypeInfer" order="last"/>
+        <luaTypeInfer implementation="io.serieznyi.intellij.factorioapicompletion.tang.DataRawTypeInfer" order="last"/>
     </extensions>
 
     <actions>
