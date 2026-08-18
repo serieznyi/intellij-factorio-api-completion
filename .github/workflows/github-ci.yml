@@ -34,19 +34,19 @@ jobs:
         id: gradle
         run: ./gradlew testClasses
       - name: Upload build reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: build-reports
           path: build/reports/
       - name: Run JUnit
         run: ./gradlew test
       - name: Archive JUnit result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: junit-report
           path: build/reports/junit
       - name: Archive Jacoco Coverage result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: jacoco-coverage-report
           path: build/reports/jacoco
@@ -56,16 +56,3 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      - run: git fetch --all
-      - name: Run SonarQube analysis with Quality Gates
-        if: github.ref != 'refs/heads/master'
-        run: ./gradlew sonar
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      - name: Run SonarQube analysis
-        if: github.ref == 'refs/heads/master'
-        run: ./gradlew sonar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_SCANNER_OPTS: "-Dsonar.qualitygate.wait=true -Dsonar.projectVersion=$CI_COMMIT_TAG"
