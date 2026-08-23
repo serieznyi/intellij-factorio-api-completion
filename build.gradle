@@ -6,7 +6,7 @@ plugins {
     id 'org.jetbrains.changelog' version '2.5.0'
     id "org.sonarqube" version "4.3.1.3277"
     id 'jacoco'
-    id 'io.freefair.lombok' version '8.3'
+    id 'io.freefair.lombok' version '9.5.0'
 }
 
 group 'moe.knox.factorio'
