@@ -4,7 +4,7 @@ plugins {
     id 'java'
     id 'org.jetbrains.intellij.platform' version '2.18.1'
     id 'org.jetbrains.changelog' version '2.5.0'
-    id "org.sonarqube" version "4.3.1.3277"
+    id "org.sonarqube" version "7.4.0.8496"
     id 'jacoco'
     id 'io.freefair.lombok' version '9.5.0'
 }
