@@ -33,7 +33,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     implementation 'com.github.Marcono1234:gson-record-type-adapter-factory:v0.2.0'
-    implementation 'org.jsoup:jsoup:1.15.3'
+    implementation 'org.jsoup:jsoup:1.23.2'
 
     intellijPlatform {
         intellijIdea("2026.2") {
