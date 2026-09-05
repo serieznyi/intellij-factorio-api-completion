@@ -41,13 +41,15 @@ dependencies {
         }
         plugin("com.tang", "1.4.23-IDEA2025.3")
         bundledPlugin("JavaScript")
+    }
+}
 
+intellijPlatform {
+    pluginVerification {
         ides {
-            // Верифицируем только на той же IDEA, что и собираем
-            create("IU", ideaVersion)
+            create("IU", "2025.3")  // верифицируем на самой старой поддерживаемой
         }
     }
-
 }
 
 ext.getPluginChangelog = { ->
