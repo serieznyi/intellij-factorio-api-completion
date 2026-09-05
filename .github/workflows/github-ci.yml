@@ -26,7 +26,6 @@ jobs:
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-          cache: gradle
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v4
       - name: Setup Gradle
@@ -61,7 +60,6 @@ jobs:
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-          cache: gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Download build output
@@ -98,7 +96,6 @@ jobs:
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-          cache: gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
       - name: Download build output
