@@ -34,13 +34,18 @@ dependencies {
 
     implementation 'com.github.Marcono1234:gson-record-type-adapter-factory:v0.2.0'
     implementation 'org.jsoup:jsoup:1.23.2'
+}
 
-    intellijPlatform {
-        intellijIdea("2026.2") {
-            useInstaller.set(false)
-        }
-        plugin("com.tang", "1.4.26-IDEA2026.2")
-        bundledPlugin("JavaScript")
+intellijPlatform {
+    intellijIdea("2025.3") {
+        useInstaller.set(false)
+    }
+    plugin("com.tang", "1.4.23-IDEA2025.3")
+    bundledPlugin("JavaScript")
+
+    ides {
+        // Верифицируем только на той же IDEA, что и собираем
+        create("IU", ideaVersion)
     }
 }
 
@@ -82,7 +87,8 @@ changelog {
 
 patchPluginXml {
     changeNotes = getPluginChangelog()
-    sinceBuild = "262"
+    sinceBuild = "253"
+    untilBuild = "262.*"
     version = project.version
 }
 
