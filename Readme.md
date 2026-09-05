@@ -45,3 +45,8 @@ Most of the issues occur, cause the html-API Documention is not consistent :(
 
 # Planned features
 - Autocompletion for LocalizedStrings
+
+# Other
+- https://keepachangelog.com
+- https://semver.org
+- https://www.conventionalcommits.org
