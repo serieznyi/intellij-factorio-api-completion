@@ -50,6 +50,14 @@ jobs:
         with:
           name: jacoco-coverage-report
           path: build/reports/jacoco
+      - name: Run IntelliJ Plugin Verifier
+        run: ./gradlew verifyPlugin -PenableVerify=true
+      - name: Upload verification reports
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: plugin-verifier-reports
+          path: build/reports/pluginVerifier/
   # Prepare a draft release for GitHub Releases page for the manual verification
   # If accepted and published, the release workflow would be triggered
   releaseDraft:
