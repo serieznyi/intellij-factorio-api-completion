@@ -4,15 +4,17 @@ on:
   push:
     branches:
     - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   JAVA_DISTRIBUTION: "temurin"
   JAVA_VERSION: "25"
-  GRADLE_BUILD_ACTION_CACHE_DEBUG_ENABLED: true
-  ACTIONS_STEP_DEBUG: true
-  ARTIFACT_FILES: .
 jobs:
   build:
-    name: Build, Test and Analyse
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project sources
@@ -24,35 +26,92 @@ jobs:
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v3
+        uses: gradle/actions/wrapper-validation@v4
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-        with:
-          gradle-version: wrapper
+        uses: gradle/actions/setup-gradle@v4
       - name: Compile project
-        id: gradle
-        run: ./gradlew testClasses
+        run: ./gradlew testClasses buildPlugin
+      - name: Upload build output
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-output
+          path: |
+            build/
+            !build/reports/
+          retention-days: 1
       - name: Upload build reports
         uses: actions/upload-artifact@v7
+        if: always()
         with:
           name: build-reports
           path: build/reports/
+          retention-days: 7
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v7
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Download build output
+        uses: actions/download-artifact@v7
+        with:
+          name: build-output
+          path: build/
       - name: Run JUnit
         run: ./gradlew test
-      - name: Archive JUnit result
+      - name: Upload JUnit report
         uses: actions/upload-artifact@v7
+        if: always()
         with:
           name: junit-report
           path: build/reports/junit
-      - name: Archive Jacoco Coverage result
+          retention-days: 7
+      - name: Upload Jacoco Coverage
         uses: actions/upload-artifact@v7
+        if: always()
         with:
           name: jacoco-coverage-report
           path: build/reports/jacoco
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v6
+          retention-days: 7
+
+  verify:
+    name: Plugin Verifier
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v7
+      - name: Set up JDK
+        uses: actions/setup-java@v6
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Download build output
+        uses: actions/download-artifact@v7
+        with:
+          name: build-output
+          path: build/
+      - name: Run IntelliJ Plugin Verifier
+        run: ./gradlew verifyPlugin
+      - name: Upload verification reports
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: plugin-verifier-reports
+          path: build/reports/pluginVerifier/
+          retention-days: 7
