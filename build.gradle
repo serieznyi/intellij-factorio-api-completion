@@ -83,7 +83,6 @@ changelog {
 patchPluginXml {
     changeNotes = getPluginChangelog()
     sinceBuild = "253"
-    untilBuild = "262.*"
     version = project.version
 }
 
