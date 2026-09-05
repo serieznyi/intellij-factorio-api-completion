@@ -74,7 +74,7 @@ sonarqube {}
 
 // See https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
-    path = "${project.projectDir}/Changelog.md"
+    path = "${project.projectDir}/CHANGELOG.md"
     header = "[${-> version.get()}] - ${new SimpleDateFormat("dd.MM.yyyy").format(new Date())}"
 }
 
