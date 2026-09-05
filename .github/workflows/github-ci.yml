@@ -51,7 +51,7 @@ jobs:
           name: jacoco-coverage-report
           path: build/reports/jacoco
       - name: Run IntelliJ Plugin Verifier
-        run: ./gradlew verifyPlugin -PenableVerify=true
+        run: ./gradlew verifyPlugin
       - name: Upload verification reports
         uses: actions/upload-artifact@v7
         if: always()
