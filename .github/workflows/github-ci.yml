@@ -4,6 +4,8 @@ on:
   push:
     branches:
     - master
+    tags:
+      - '*'
 env:
   JAVA_DISTRIBUTION: "temurin"
   JAVA_VERSION: "25"
@@ -54,7 +56,7 @@ jobs:
   # If accepted and published, the release workflow would be triggered
   releaseDraft:
     name: Release draft
-    if: github.event_name != 'pull_request'
+    if: startsWith(github.ref, 'refs/tags/')
     needs: [ build ]
     runs-on: ubuntu-latest
     permissions:
