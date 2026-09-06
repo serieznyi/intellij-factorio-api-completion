@@ -60,6 +60,38 @@ jobs:
         with:
           name: plugin-verifier-reports
           path: build/reports/pluginVerifier/
+  publishNightly:
+    name: Publish to Nightly
+    if: github.ref == 'refs/heads/master'
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: wrapper
+      - name: Generate version
+        id: version
+        run: |
+          IDEA_VERSION=$(grep -oP 'intellijIdea\("\K[^"]+' build.gradle)
+          SHORT_COMMIT=$(git rev-parse --short HEAD)
+          DATE=$(date +%Y.%m.%d)
+          VERSION="${IDEA_VERSION}-${DATE}-${SHORT_COMMIT}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Generated version: ${VERSION}"
+      - name: Publish plugin
+        run: ./gradlew publishPlugin -Pversion=${{ steps.version.outputs.version }}
+        env:
+          PUBLISH_TOKEN: ${{ secrets.JETBRAINS_PLUGINS_MARKET_TOKEN }}
   # Prepare a draft release for GitHub Releases page for the manual verification
   # If accepted and published, the release workflow would be triggered
   releaseDraft:

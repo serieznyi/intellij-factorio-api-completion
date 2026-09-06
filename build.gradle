@@ -50,6 +50,10 @@ intellijPlatform {
             create("IU", "2026.2")
         }
     }
+    publishPlugin {
+        token.set(System.getenv("PUBLISH_TOKEN") ?: "")
+        channels.set(listOf("Nightly"))
+    }
 }
 
 ext.getPluginChangelog = { ->
