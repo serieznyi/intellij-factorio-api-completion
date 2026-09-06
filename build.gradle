@@ -36,10 +36,10 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.23.2'
 
     intellijPlatform {
-        intellijIdea("2025.3") {
+        intellijIdea("2026.2") {
             useInstaller.set(false)
         }
-        plugin("com.tang", "1.4.23-IDEA2025.3")
+        plugin("com.tang", "1.4.26-IDEA2026.2")
         bundledPlugin("JavaScript")
     }
 }
@@ -47,7 +47,7 @@ dependencies {
 intellijPlatform {
     pluginVerification {
         ides {
-            create("IU", "2025.3")  // верифицируем на самой старой поддерживаемой
+            create("IU", "2026.2")
         }
     }
 }
@@ -90,7 +90,7 @@ changelog {
 
 patchPluginXml {
     changeNotes = getPluginChangelog()
-    sinceBuild = "253"
+    sinceBuild = "262"
     untilBuild = "262.*"
     version = project.version
 }
