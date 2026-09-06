@@ -50,9 +50,8 @@ intellijPlatform {
             create("IU", "2026.2")
         }
     }
-    publishPlugin {
-        token.set(System.getenv("PUBLISH_TOKEN") ?: "")
-        channels.set(listOf("nightly"))
+    publishing {
+        token = System.getenv("PUBLISH_TOKEN") ?: ""
     }
 }
 

@@ -5,15 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Unreleased
 
-### Fixed
-
-- Fixed prototypes update check (#32)
-
-### Changed
-
-- feat: upgrade to IntelliJ IDEA 2026.2 and Java 25 (#54)
-- chore: change minimal support version to IDE 2026.2
-
 ## [1.4.0-IDEA231-eap-3] - 2023-09-29
 
 ### Fixed
