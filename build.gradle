@@ -9,7 +9,7 @@ plugins {
     id 'io.freefair.lombok' version '9.5.0'
 }
 
-group = 'moe.knox.factorio'
+group = 'io.serieznyi'
 version '1.4.0-IDEA231-eap-3'
 
 java {
