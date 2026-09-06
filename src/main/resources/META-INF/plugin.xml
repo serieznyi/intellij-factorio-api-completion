@@ -1,12 +1,12 @@
 <idea-plugin>
-    <id>serieznyi.factorio.autocompletion</id>
-    <name>Factorio LUA API Support Fork</name>
+    <id>io.serieznyi.factorio-api-completion</id>
+    <name>Factorio Api Completion</name>
     <vendor email="serieznyi@gmail.com">Maxim Mironyuk</vendor>
 
     <description><![CDATA[
-    <p>Fork of abandoned plugin <a  href="https://plugins.jetbrains.com/plugin/13330-factorio-lua-api-support">Factorio LUA API Support</a>.</p>
     <p>Adds Support for the Factorio LUA API. This implements a full code completion.</p>
     <p>To use the code completion, it has to be activated under `Settings > Languages & Frameworks > Factorio Autocompletion`</p>
+    <p>Based on abandoned plugin <a  href="https://plugins.jetbrains.com/plugin/13330-factorio-lua-api-support">Factorio LUA API Support</a>.</p>
     ]]>
     </description>
 
