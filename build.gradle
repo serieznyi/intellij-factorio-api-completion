@@ -44,6 +44,14 @@ dependencies {
     }
 }
 
+intellijPlatform {
+    pluginVerification {
+        ides {
+            create("IU", "2026.2")
+        }
+    }
+}
+
 ext.getPluginChangelog = { ->
     StringBuilder changelogHtml = new StringBuilder()
 
