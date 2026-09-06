@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'io.serieznyi'
-version '1.4.0-IDEA231-eap-3'
+version '262.1.0-nightly.1'
 
 java {
     toolchain {
@@ -52,6 +52,7 @@ intellijPlatform {
     }
     publishing {
         token = System.getenv("PUBLISH_TOKEN") ?: ""
+        channels = ["nightly"]
     }
 }
 
