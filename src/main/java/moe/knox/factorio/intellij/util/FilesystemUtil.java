@@ -1,23 +1,17 @@
 package moe.knox.factorio.intellij.util;
 
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManagerCore;
-import com.intellij.openapi.extensions.PluginId;
+import com.intellij.ide.plugins.cl.PluginAwareClassLoader;
+import com.intellij.openapi.application.PathManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
 public class FilesystemUtil {
-    private static final PluginId PLUGIN_ID = PluginId.getId("serieznyi.factorio.autocompletion");
+    public static @NotNull Path getPluginDir() {
+        return PathManager.getPluginsDir().resolve(getPluginId());
+    }
 
-    public static @NotNull Path getPluginDir()
-    {
-        IdeaPluginDescriptor descriptor = PluginManagerCore.getPlugin(PLUGIN_ID);
-
-        if (descriptor == null) {
-            throw new RuntimeException("Unexpected error. Plugin dir not found");
-        }
-
-        return descriptor.getPluginPath();
+    public static String getPluginId() {
+        return ((PluginAwareClassLoader) FilesystemUtil.class.getClassLoader()).getPluginDescriptor().getPluginId().getIdString();
     }
 }
