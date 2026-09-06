@@ -52,7 +52,7 @@ intellijPlatform {
     }
     publishPlugin {
         token.set(System.getenv("PUBLISH_TOKEN") ?: "")
-        channels.set(listOf("Nightly"))
+        channels.set(listOf("nightly"))
     }
 }
 
