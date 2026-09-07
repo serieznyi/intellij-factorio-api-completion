@@ -3,3 +3,5 @@ plugins {
 }
 
 rootProject.name = 'factorio-api-completion'
+
+include 'core'
