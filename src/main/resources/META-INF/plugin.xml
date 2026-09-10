@@ -4,6 +4,7 @@
     <vendor email="serieznyi@gmail.com">Maxim Mironyuk</vendor>
 
     <description><![CDATA[
+    <p>Based on abandoned plugin <a  href="https://plugins.jetbrains.com/plugin/13330-factorio-lua-api-support">Factorio LUA API Support</a>.</p>
     <p>Adds Support for the Factorio LUA API. This implements a full code completion.</p>
     <p>To use the code completion, it has to be activated under `Settings > Languages & Frameworks > Factorio Autocompletion`</p>
     <p>Based on abandoned plugin <a  href="https://plugins.jetbrains.com/plugin/13330-factorio-lua-api-support">Factorio LUA API Support</a>.</p>

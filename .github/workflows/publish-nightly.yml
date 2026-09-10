@@ -1,0 +1,47 @@
+name: Publish Nightly
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/**'
+      - 'build.gradle'
+      - 'gradle.properties'
+  workflow_dispatch:
+
+env:
+  JAVA_DISTRIBUTION: "temurin"
+  JAVA_VERSION: "25"
+
+jobs:
+  publish-nightly:
+    name: Publish to Nightly
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project sources
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v3
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: wrapper
+      - name: Generate version
+        id: version
+        run: |
+          IDEA_VERSION=$(grep -oP 'intellijIdea\("\K[^"]+' build.gradle)
+          SHORT_COMMIT=$(git rev-parse --short HEAD)
+          VERSION="${IDEA_VERSION}.0-nightly.${GITHUB_RUN_NUMBER}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Generated version: ${VERSION}"
+      - name: Publish plugin
+        run: ./gradlew publishPlugin -Pversion=${{ steps.version.outputs.version }}
+        env:
+          PUBLISH_TOKEN: ${{ secrets.JETBRAINS_PLUGINS_MARKET_TOKEN }}
