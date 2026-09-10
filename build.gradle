@@ -12,9 +12,11 @@ plugins {
 group = 'io.serieznyi'
 version '1.4.0-IDEA231-eap-3'
 
+def jvmToolchainVersion = providers.gradleProperty('jvmToolchainVersion').get()
+
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(Integer.parseInt(jvmToolchainVersion))
     }
 }
 

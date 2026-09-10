@@ -1,17 +1,19 @@
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 
+val jvmToolchainVersion: String = providers.gradleProperty("jvmToolchainVersion").get()
+
 plugins {
     id("org.jetbrains.kotlin.jvm") version "2.4.20"
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
+        languageVersion = JavaLanguageVersion.of(jvmToolchainVersion.toInt())
     }
 }
 
 kotlin {
-    jvmToolchain(25)
+    jvmToolchain(jvmToolchainVersion.toInt())
 }
 
 repositories {
